@@ -23,8 +23,6 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
 
 ## 🏗️ Architecture (N‑Tier) — Overview
 
-## 🏗️ Architecture (N‑Tier) — Overview
-
 ```
 Presentation (ASP.NET MVC)
     ⇅
