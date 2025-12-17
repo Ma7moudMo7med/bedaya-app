@@ -66,14 +66,17 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
    dotnet run --project src/Your.Presentation/Your.Presentation.csproj
       
 ---
-### 🔐 Configuration (Important)
- appsettings.json and appsettings.Development.json are not included for security reasons. 
- You must create them manually.
- 📄 Create appsettings.Development.json
-  Inside the Presentation (MVC) project, create:
-  appsettings.Development.json
-  Then add:
-  {
+---
+
+## 🔐 Configuration (Important)
+> [!IMPORTANT]
+> `appsettings.json` and `appsettings.Development.json` are **not included** in the repository for security reasons. You must create them manually before running the project.
+
+### 📄 Step 1: Create appsettings.Development.json
+Inside your **Presentation (MVC)** project root, create a file named `appsettings.Development.json` and paste the following structure:
+
+```json
+{
   "PaymobSettings": {
     "ApiKey": "YOUR_PAYMOB_API_KEY",
     "IframeId": "YOUR_IFRAME_ID",
@@ -90,8 +93,15 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
   },
   "ConnectionStrings": {
     "cs": "Server=.;Database=BedayaDb;Trusted_Connection=True;TrustServerCertificate=True"
-  }
- }
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
 
 ---
 ### 🧩 Roles & Permissions
