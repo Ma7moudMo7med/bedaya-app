@@ -57,3 +57,68 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
    ```bash
    git clone [https://github.com/Ma7moudMo7med/bedaya-app.git](https://github.com/Ma7moudMo7med/bedaya-app.git)
    cd bedaya-app
+2. **Configure connection string & keys in appsettings.Development.json or user secrets
+3. Apply EF migrations & seed data:
+   ```bash
+   dotnet ef database update --project src/Your.DAL --startup-project src/Your.Presentation
+4. Run the web project
+   ```bash
+   dotnet run --project src/Your.Presentation/Your.Presentation.csproj
+      
+---
+### 🔐 Configuration (Important)
+ appsettings.json and appsettings.Development.json are not included for security reasons. 
+ You must create them manually.
+ 📄 Create appsettings.Development.json
+  Inside the Presentation (MVC) project, create:
+  appsettings.Development.json
+  Then add:
+  {
+  "PaymobSettings": {
+    "ApiKey": "YOUR_PAYMOB_API_KEY",
+    "IframeId": "YOUR_IFRAME_ID",
+    "IntegrationId": "YOUR_INTEGRATION_ID",
+    "BaseUrl": "[https://accept.paymob.com/api](https://accept.paymob.com/api)",
+    "Hmac": "YOUR_PAYMOB_HMAC"
+  },
+  "SMTP": {
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "User": "YOUR_EMAIL@gmail.com",
+    "Pass": "YOUR_APP_PASSWORD",
+    "From": "Bedaya_Platform@gmail.com"
+  },
+  "ConnectionStrings": {
+    "cs": "Server=.;Database=BedayaDb;Trusted_Connection=True;TrustServerCertificate=True"
+  }
+ }
+
+---
+### 🧩 Roles & Permissions
+* Admin: Full CRUD on users, courses, categories, subscriptions, and payments.
+
+* Instructor: Manage own courses, lessons, uploads, and view analytics.
+
+* Student: Browse, enroll, and consume content according to subscription limits.
+
+---
+### 🛠️ Development Tips
+✅ Keep controllers thin; place business rules in BLL.
+
+✅ Use DTOs and AutoMapper for mapping domain models.
+
+✅ Store credentials securely (User Secrets / Key Vault) for production.
+
+✅ Seed admin and sample data only in development environments.
+
+---
+### 📬 Contact / Author
+Author: Mahmoud Mohamed
+
+GitHub: Ma7moudMo7med
+
+
+
+
+   
+
