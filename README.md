@@ -128,7 +128,28 @@ Author: Mahmoud Mohamed
 
 GitHub: Ma7moudMo7med
 
+---
 
+🧩 Roles & Permissions
+Admin: Full CRUD on users, courses, categories, subscriptions, and payments.
+
+Instructor: Manage own courses, lessons, uploads, and view analytics.
+
+Student: Browse, enroll, and consume content according to subscription limits.
+
+🛠️ Development Tips
+✅ Keep controllers thin; place business rules in BLL.
+
+✅ Use DTOs and AutoMapper for mapping domain models.
+
+✅ Store credentials securely (User Secrets / Key Vault) for production.
+
+✅ Seed admin and sample data only in development environments.
+
+📬 Contact / Author
+Author: Mahmoud Mohamed
+
+GitHub: Ma7moudMo7med
 
 
    
