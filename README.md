@@ -103,6 +103,7 @@ Inside your **Presentation (MVC)** project root, create a file named `appsetting
   "AllowedHosts": "*"
 }
 
+
 ---
 ### 🧩 Roles & Permissions
 * Admin: Full CRUD on users, courses, categories, subscriptions, and payments.
