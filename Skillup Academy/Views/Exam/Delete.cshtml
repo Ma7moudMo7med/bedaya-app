@@ -1,0 +1,96 @@
+﻿@model Core.Models.Exams.Exam
+
+@{
+    ViewData["Title"] = "Delete Exam";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-danger mb-4">Confirm Deletion</h1>
+
+            <div class="alert alert-danger shadow-sm p-4" role="alert">
+                <h3>Are you sure you want to delete the exam: **@Model.Title**?</h3>
+                <p class="lead mt-3">This action cannot be undone. All related exam attempts, questions (@Model.Questions?.Count), and results will be permanently removed from the system.</p>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Exam Summary</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Title</dt>
+                        <dd class="col-sm-9">@Model.Title</dd>
+
+                        <dt class="col-sm-3">Description</dt>
+                        <dd class="col-sm-9">@Model.Description</dd>
+
+                        <dt class="col-sm-3">Course</dt>
+                        <dd class="col-sm-9">@Model.Course?.Title</dd>
+
+                        <dt class="col-sm-3">Exam ID</dt>
+                        <dd class="col-sm-9">@Model.Id</dd>
+
+                        <dt class="col-sm-3">Course ID</dt>
+                        <dd class="col-sm-9">@Model.CourseId</dd>
+
+                        <dt class="col-sm-3">Duration</dt>
+                        <dd class="col-sm-9">@Model.Duration minutes</dd>
+
+                        <dt class="col-sm-3">Total Questions</dt>
+                        <dd class="col-sm-9">@Model.TotalQuestions</dd>
+
+                        <dt class="col-sm-3">Pass Mark</dt>
+                        <dd class="col-sm-9">@Model.PassMark%</dd>
+
+                        <dt class="col-sm-3">Max Attempts</dt>
+                        <dd class="col-sm-9">@Model.MaxAttempts</dd>
+
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge @(Model.IsPublished ? "bg-success" : "bg-secondary")">
+                                @(Model.IsPublished ? "Published" : "Draft")
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Created Date</dt>
+                        <dd class="col-sm-9">@Model.CreatedDate.ToString("dd MMM yyyy HH:mm")</dd>
+
+                        @if (Model.AvailableFrom.HasValue)
+                        {
+                            <dt class="col-sm-3">Available From</dt>
+                            <dd class="col-sm-9">@Model.AvailableFrom.Value.ToString("dd MMM yyyy HH:mm")</dd>
+                        }
+
+                        @if (Model.AvailableTo.HasValue)
+                        {
+                            <dt class="col-sm-3">Available To</dt>
+                            <dd class="col-sm-9">@Model.AvailableTo.Value.ToString("dd MMM yyyy HH:mm")</dd>
+                        }
+
+                        <dt class="col-sm-3">Related Questions</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-info">@Model.Questions?.Count questions</span>
+                        </dd>
+
+                        <dt class="col-sm-3">Exam Attempts</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-primary">@Model.ExamAttempts?.Count attempts</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <hr class="mt-4" />
+
+            <form asp-action="Delete" method="post" class="text-center">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger btn-lg px-5 me-3">
+                    <i class="bi bi-trash"></i> Delete Permanently
+                </button>
+                <a asp-action="Index" class="btn btn-secondary btn-lg">Cancel & Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

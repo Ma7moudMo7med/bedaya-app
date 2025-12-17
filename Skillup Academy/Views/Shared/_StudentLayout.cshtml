@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Student</title>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        .navbar-custom {
+            background: #0d6efd;
+            padding: 12px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .menu-btn {
+            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 8px;
+        }
+
+        .dropdown-menu {
+            border-radius: 10px;
+            padding: 10px 0;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+            animation: fadeSlide 0.25s ease;
+        }
+
+        .dropdown-item {
+            padding: 10px 18px;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+            .dropdown-item:hover {
+                background: #f1f1f1;
+                padding-left: 22px;
+            }
+
+        @@keyframes fadeSlide {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+            <span class="navbar-brand fw-bold fs-4">Student Panel</span>
+
+            <div class="dropdown ms-auto">
+                <button class="btn btn-light dropdown-toggle menu-btn" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Menu
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-end">
+
+                    <a class="dropdown-item" asp-controller="Student" asp-action="Profile">
+                        👤 Profile
+                    </a>
+                    <a class="dropdown-item" asp-controller="Home" asp-action="Index">
+                        📊 Home
+                    </a>
+
+                    <a class="dropdown-item" asp-controller="Course" asp-action="AllCaurseIsPublished">
+                        🎓 All Courses
+                    </a>
+
+                    <a class="dropdown-item" href="@Url.Action("MyCourse", "Student")">
+                        📚 My Courses
+                    </a>
+
+                    <a class="dropdown-item" href="@Url.Action("MySubscription", "Student")">
+                        💳 My Subscription
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">
+                        🚪 Logout
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- BODY -->
+    <div class="container mt-4">
+        @RenderBody()
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

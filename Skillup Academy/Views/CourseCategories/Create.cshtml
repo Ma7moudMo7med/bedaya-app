@@ -1,0 +1,131 @@
+﻿@model Skillup_Academy.ViewModels.CoursesViewModels.CourseCategoryViewModel
+
+@{
+    ViewData["Title"] = "Create New Course Category";
+}
+
+<style>
+    /* Optional: Custom style for a better look on the description field */
+    .form-floating-custom .form-control {
+        min-height: 120px;
+        resize: none;
+    }
+</style>
+
+<div class="container py-5 my-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h1 class="display-6 fw-bolder text-dark">
+                    <i class="fas fa-magic text-primary me-2"></i> New Category Setup
+                </h1>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill px-4 py-2 shadow-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back to List
+                </a>
+            </div>
+
+            <div class="card shadow-xl border-0 rounded-5 overflow-hidden">
+                <div class="card-body p-5 bg-white">
+
+                    <form asp-action="SaveCreate" method="post" enctype="multipart/form-data">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show shadow-sm mb-5" role="alert">
+                            <h6 class="alert-heading fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Submission Error!</h6>
+                            Please review and correct the marked fields below.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <div class="mb-5 pb-3 border-bottom">
+                            <h5 class="text-primary mb-4 fw-bold"><i class="fas fa-clipboard-list me-2"></i> Core Category Data</h5>
+
+                            <div class="form-floating mb-4">
+                                <input asp-for="Name" class="form-control form-control-lg rounded-3" placeholder="Category Name" />
+                                <label asp-for="Name">Category Name</label>
+                                 <span asp-validation-for="Name" class="text-danger mt-1 d-block"></span>
+                            </div>
+
+                            <div class="mb-4 form-floating-custom">
+                                <label asp-for="Description" class="form-label fw-bold">Detailed Description</label>
+                                <textarea asp-for="Description" class="form-control rounded-3" rows="4" placeholder="Provide a detailed overview..."></textarea>
+                                 <span asp-validation-for="Description" class="text-danger mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-5">
+
+                            <div class="col-md-7 border-end pe-md-4">
+                                <h5 class="text-primary mb-3 fw-bold"><i class="fas fa-image me-2"></i> Category Thumbnail</h5>
+
+                                <label asp-for="Image" class="form-label fw-bold">Upload Image File</label>
+                                <input asp-for="Image" class="form-control form-control-lg rounded-3" type="file" id="categoryImageInput" accept="image/*" />
+                                 <span asp-validation-for="Image" class="text-danger mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-5 ps-md-4 mt-4 mt-md-0 d-flex flex-column justify-content-between">
+
+                                <div class="text-center mb-4">
+                                    <p class="fw-semibold mb-2 text-dark">Live Preview</p>
+                                    <img id="imagePreview" src="https://via.placeholder.com/180x135?text=Click+to+Upload" alt="Image Preview"
+                                         class="img-thumbnail rounded-4 shadow-lg border border-3 border-light p-1" style="width: 180px; height: 135px; object-fit: cover;">
+                                </div>
+
+                                <div class="p-3 bg-light rounded-3 shadow-sm">
+                                    <h6 class="fw-bold mb-2 text-dark"><i class="fas fa-power-off me-1"></i> Active Status</h6>
+                                    <div class="form-check form-switch d-flex align-items-center">
+                                        <input class="form-check-input form-check-input-lg me-3" type="checkbox" role="switch" id="isActiveSwitch" asp-for="IsActive">
+                                        <div>
+                                            <label class="form-check-label fw-bold" for="isActiveSwitch">
+                                                <span class="text-dark">@Html.DisplayNameFor(model => model.IsActive)</span>
+                                            </label>
+                                            <small class="form-text text-muted d-block mt-0">Category visibility on the site.</small>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="IsActive" class="text-danger mt-1 d-block"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center pt-4">
+                            <button type="submit" class="btn btn-primary btn-xl px-5 shadow-lg rounded-pill animate__animated animate__pulse">
+                                <i class="fas fa-rocket me-2"></i> Launch Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageInput = document.getElementById('categoryImageInput');
+            const imagePreview = document.getElementById('imagePreview');
+
+            // Set initial style for the image preview (optional but nice)
+            imagePreview.style.cursor = 'pointer';
+            imagePreview.onclick = () => imageInput.click();
+
+            imageInput.addEventListener('change', function (event) {
+                if (event.target.files && event.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.add('border-success'); // Highlight border on success
+                    };
+                    reader.readAsDataURL(event.target.files[0]);
+                } else {
+                    imagePreview.src = "https://via.placeholder.com/180x135?text=Click+to+Upload";
+                    imagePreview.classList.remove('border-success');
+                }
+            });
+        });
+    </script>
+}

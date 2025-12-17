@@ -1,0 +1,252 @@
+﻿@using Core.Models.Users
+
+@model Teacher
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<style>
+    :root {
+        --primary-brand: #3A70F2;
+        --secondary-dark: #1F2937;
+        --success-color: #10B981;
+         --bg-light: #F9FAFB;
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        --card-hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-light);
+    }
+
+    .container.pt-3 {
+        padding-top: 50px !important;
+        padding-bottom: 50px;
+    }
+
+    .search-results-info {
+        border-bottom: 2px solid #E5E7EB !important;
+        padding-bottom: 15px !important;
+        margin-bottom: 30px !important;
+    }
+    
+    .search-results-info p {
+        font-size: 1.1rem;
+        color: var(--secondary-dark);
+        font-weight: 600 !important;
+    }
+
+    .course-card-pro {
+        background-color: #ffffff;
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        min-height: 340px; 
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #E5E7EB;
+    }
+
+    .course-card-pro:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .course-card-pro a {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-decoration: none !important;
+    }
+
+    .course-image {
+        width: 100%;
+        height: 190px;
+        object-fit: cover;
+        border-bottom: none;
+        transition: transform 0.4s;
+    }
+    
+    .course-card-pro:hover .course-image {
+        transform: scale(1.03);
+    }
+
+    .course-card-pro > a > div.p-4 {
+        padding: 24px !important;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-category {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--primary-brand);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        letter-spacing: 0.8px;
+    }
+
+    .course-title {
+        font-size: 1.35rem;
+        font-weight: 800 !important;
+        color: var(--secondary-dark);
+        margin-bottom: 10px;
+        line-height: 1.3;
+        max-height: 3.9em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        flex-grow: 1;
+    }
+
+    .text-muted.small.mb-2 {
+        font-size: 0.9rem;
+        color: #6B7280 !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .text-muted.small.mb-2 i {
+        color: var(--primary-brand);
+    }
+
+    .d-flex.justify-content-between.align-items-center.small.text-muted.mb-3.pt-2.border-top {
+        border-top: 1px dashed #E5E7EB !important;
+        padding-top: 15px !important;
+        margin-bottom: 15px !important;
+        color: #9CA3AF !important;
+    }
+
+    .d-flex.justify-content-between.align-items-center.small.text-muted.mb-3.pt-2.border-top .text-success {
+        color: var(--success-color) !important;
+        font-weight: 700;
+    }
+    
+    .course-price {
+        font-size: 1.8rem;
+        font-weight: 900;
+    }
+
+    .course-price.text-success {
+        color: var(--success-color) !important;
+    }
+    
+    .btn-enroll {
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn.btn-primary.btn-enroll {
+        background-color: var(--primary-brand) !important;
+        border-color: var(--primary-brand) !important;
+    }
+
+    .btn.btn-success.btn-enroll {
+        background-color: var(--success-color) !important;
+        border-color: var(--success-color) !important;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+    
+    .no-teacher-placeholder {
+        background-color: #F3F4F6;
+        padding: 40px;
+        border-radius: 12px;
+        text-align: center;
+        margin-top: 40px;
+        color: #6B7280;
+    }
+</style>
+
+<div class="container pt-3 ">
+    <div class="row">
+
+
+        <div class="col-lg-12">
+
+            <div class="d-flex justify-content-between align-items-center search-results-info">
+                <p class="mb-0 fw-semibold text-dark">Showing @Model.Courses.Count() results for <span style="color: var(--primary-brand);">@Model.FullName</span> </p>
+                
+            </div>
+                
+            <div class="row">
+                
+                @if (Model.Courses.Any())
+                {
+                    @foreach (var item in Model.Courses)
+                    {
+                        <div class="col-md-6 col-lg-4 mt-4">
+                            <div class="course-card-pro">
+                                <a href="@Url.Action("Details", "Course", new { id = item.Id })" class="text-decoration-none text-dark">
+                                    <img class="course-image" src="/img/@item.ThumbnailUrl" alt="@item.Title Thumbnail" onerror="this.onerror=null; this.src='/images/default_course.png';"/>
+                                    <div class="p-4">
+
+                                        <div class="course-category"> @(item.SubCategory?.Name ?? "General")</div>
+                                        <h3 class="course-title fw-bold">@item.Title</h3>
+                                        <div class="text-muted small mb-2">
+                                            <i class="fas fa-chalkboard-teacher me-1"></i> By  @(item.Teacher?.FullName ?? "N/A")
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center small text-muted mb-3 pt-2 border-top">
+                                            <span class="text-success fw-bold"><i class="fas fa-award me-1"></i> Bestseller</span>
+                                            <span><i class="far fa-clock me-1"></i> @item.TotalDuration Minutes</span>
+                                        </div>
+                                        
+                                        @if (item.IsFree)
+                                        { 
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <div class="course-price text-success">FREE</div>
+                                                <div class="text-muted small">Full Access</div>
+                                            </div>
+                                            <a asp-controller="Course" asp-action="Details" asp-route-id="@item.Id" class="btn btn-success btn-enroll w-100 mt-3" >Start Learning</a>
+
+                                        }
+                                        else
+                                        {   
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                 <div class="text-muted small">Lifetime Access</div>
+                                            </div>
+                                            <a asp-controller="Course" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-enroll w-100 mt-3">Enroll Now</a>
+                                        } 
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="no-teacher-placeholder">
+                            <i class="fas fa-box-open fa-3x mb-3"></i>
+                            <h4 class="fw-bold">No Courses Found!</h4>
+                            <p>This instructor currently has no courses listed. Check back later!</p>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+            
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li class="page-item active"><a class="page-link" href="#" style="background-color: var(--primary-brand); border-color: var(--primary-brand);">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                </ul>
+            </nav>
+            
+        </div>  
+    </div>
+</div>

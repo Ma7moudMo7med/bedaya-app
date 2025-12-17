@@ -1,0 +1,1239 @@
+﻿@using Skillup_Academy.ViewModels.TeacherDashboard
+@model IEnumerable<CourseDashboardViewModel>
+
+@{
+    ViewData["Title"] = "My Courses";
+    Layout = "/Views/Shared/_TeacherLayout.cshtml";
+
+    // Pagination settings
+    var pageSize = 6; // Number of courses per page
+    var currentPage = Context.Request.Query["page"].ToString() != "" ? int.Parse(Context.Request.Query["page"]) : 1;
+    var totalCourses = Model.Count();
+    var totalPages = (int)Math.Ceiling((double)totalCourses / pageSize);
+    var displayedCourses = Model.Skip((currentPage - 1) * pageSize).Take(pageSize);
+}
+
+<!-- Top Bar -->
+<div class="teacher-top-bar">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="teacher-profile-info">
+                    <div class="teacher-avatar-container">
+                        @if (!string.IsNullOrEmpty(ViewBag.ProfilePictureUrl))
+                        {
+                            <img src="@ViewBag.ProfilePictureUrl" class="teacher-avatar" alt="@ViewBag.TeacherName">
+                        }
+                        else
+                        {
+                            <div class="teacher-avatar placeholder-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        }
+                        <div class="online-indicator"></div>
+                    </div>
+                    <div class="teacher-details">
+                        <h4 class="teacher-name mb-1">Welcome, @ViewBag.TeacherName!</h4>
+                        <p class="teacher-expertise mb-0">
+                            <i class="fas fa-graduation-cap me-1"></i>
+                            @ViewBag.TeacherExpertise
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex align-items-center justify-content-end gap-3">
+                    <button class="btn-notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Compact Hero Section -->
+<div class="hero-section-compact">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="hero-content-compact">
+                    <h1 class="hero-title-compact">Manage Your Courses</h1>
+                    <p class="hero-bio-compact">Create, edit, and track the performance of your educational content in one place.</p>
+                    <div class="hero-actions-compact mt-3">
+                        <a asp-action="Create" asp-controller="Course" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-plus-circle me-2"></i>Create New Course
+                        </a>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="hero-stats-compact">
+                    <div class="stat-badge">
+                        <span class="stat-number">@Model.Count()</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-number">@Model.Count(c => c.IsPublished)</span>
+                        <span class="stat-label">Published</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-number">@Model.Sum(c => c.TotalStudents)</span>
+                        <span class="stat-label">Students</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <!-- Enhanced Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-1">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number">@Model.Count()</h3>
+                        <p class="stat-label">Total Courses</p>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-trending-up me-1"></i>
+                    <small>@(Model.Count() > 0 ? "Active content" : "Start creating")</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-2">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number">@Model.Sum(c => c.TotalStudents)</h3>
+                        <p class="stat-label">Total Students</p>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-user-graduate me-1"></i>
+                    <small>@(Model.Sum(c => c.TotalStudents) > 0 ? "Active learners" : "No students yet")</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-3">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number">@Model.Sum(c => c.TotalLessons)</h3>
+                        <p class="stat-label">Total Lessons</p>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-video me-1"></i>
+                    <small>Educational content</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-4">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number">@Model.Count(c => c.IsPublished)</h3>
+                        <p class="stat-label">Published</p>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-check-circle me-1"></i>
+                    <small>Live courses</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and Search Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="filter-section">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <h3 class="section-title mb-0">My Courses</h3>
+                        <div class="filter-badges">
+                            <span class="badge filter-badge active" data-filter="all">All (@Model.Count())</span>
+                            <span class="badge filter-badge" data-filter="published">Published (@Model.Count(c => c.IsPublished))</span>
+                            <span class="badge filter-badge" data-filter="draft">Draft (@Model.Count(c => !c.IsPublished))</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form method="get" asp-action="CourseSearch" asp-route-id="@ViewBag.TeacherId">
+                            <div class="search-box">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text"
+                                       class="search-input"
+                                       placeholder="Search courses..."
+                                       id="courseSearch"
+                                       name="searchString" />
+                            </div>
+
+                            <input type="hidden" name="teacherId" value="@ViewBag.TeacherId" />
+                        </form>
+                        <div class="sort-dropdown">
+                            <select class="form-select" id="sortSelect">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="students">Most Students</option>
+                                <option value="rating">Highest Rating</option>
+                            </select>
+                        </div>
+                        <a asp-action="Create" asp-controller="Course" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>New Course
+                        </a>
+                        <a asp-action="ShowAll" asp-controller="Course" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>View All
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="row" id="courses-container">
+        @if (displayedCourses != null && displayedCourses.Any())
+        {
+            foreach (var course in displayedCourses)
+            {
+                <div class="col-xl-4 col-lg-6 mb-4 course-item"
+                     data-status="@(course.IsPublished ? "published" : "draft")"
+                     data-title="@course.Title.ToLower()"
+                     data-date="@course.CreatedDate.Ticks"
+                     data-students="@course.TotalStudents"
+                     data-rating="@course.AverageRating">
+                    <div class="course-card-modern" data-course-id="@course.CourseId">
+                        <div class="course-image-container">
+                            @if (!string.IsNullOrEmpty(course.ThumbnailUrl))
+                            {
+                                <img src="/img/@course.ThumbnailUrl" class="course-image" alt="@course.Title">
+                            }
+                            else
+                            {
+                                <div class="course-image-placeholder">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                            }
+                            <div class="course-badges">
+                                <span class="course-status-badge @(course.IsPublished ? "published" : "draft")">
+                                    @(course.IsPublished ? "Published" : "Draft")
+                                </span>
+                                <span class="course-type-badge @(course.IsFree ? "free" : "paid")">
+                                    @(course.IsFree ? "Free" : "Paid")
+                                </span>
+                            </div>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-header">
+                                <h5 class="course-title">@course.Title</h5>
+                                <div class="course-rating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span>@course.AverageRating.ToString("0.0")</span>
+                                </div>
+                            </div>
+
+                            <p class="course-description">@(string.IsNullOrEmpty(course.Description) ? "No description available." : (course.Description.Length > 120 ? course.Description.Substring(0, 120) + "..." : course.Description))</p>
+
+                            <div class="course-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>@course.CreatedDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>@course.TotalDuration min</span>
+                                </div>
+                            </div>
+
+                            <div class="course-stats">
+                                <div class="stat">
+                                    <i class="fas fa-users"></i>
+                                    <span>@course.TotalStudents Students</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>@course.TotalLessons Lessons</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-actions">
+                                <a asp-action="Details" asp-controller="Course" asp-route-id="@course.CourseId" class="btn-action btn-view" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-controller="Course" asp-route-id="@course.CourseId" class="btn-action btn-edit" title="Edit Course">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Delete" asp-controller="Course" asp-route-id="@course.CourseId" class="btn-action btn-delete" title="Delete Course">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <a href="#" class="btn-action btn-analytics" title="View Analytics">
+                                    <i class="fas fa-chart-bar"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4>No Courses Created Yet</h4>
+                    <p class="text-muted">Start your teaching journey by creating your first course and sharing your knowledge.</p>
+                    <a asp-action="Create" asp-controller="Course" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create Your First Course
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Empty Search Results Message (Hidden by default) -->
+    <div class="row d-none" id="no-results-message">
+        <div class="col-12">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h4>No Courses Found</h4>
+                <p class="text-muted">We couldn't find any courses matching your search criteria. Try adjusting your search or filter.</p>
+                <button class="btn btn-outline-primary" id="reset-filters">
+                    <i class="fas fa-refresh me-2"></i>Reset Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (totalPages > 1)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="pagination-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="pagination-info">
+                            Showing <strong>@((currentPage - 1) * pageSize + 1)-@Math.Min(currentPage * pageSize, totalCourses)</strong> of <strong>@totalCourses</strong> courses
+                        </div>
+                        <div class="pagination-controls">
+                            @if (currentPage > 1)
+                            {
+                                <a href="?page=@(currentPage - 1)" class="btn btn-outline-primary btn-pagination">
+                                    <i class="fas fa-chevron-left me-2"></i>Previous
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="btn btn-outline-secondary btn-pagination disabled">
+                                    <i class="fas fa-chevron-left me-2"></i>Previous
+                                </span>
+                            }
+
+                            <div class="pagination-numbers mx-3">
+                                @for (int i = 1; i <= totalPages; i++)
+                                {
+                                    if (i == currentPage)
+                                    {
+                                        <span class="pagination-number active">@i</span>
+                                    }
+                                    else
+                                    {
+                                        <a href="?page=@i" class="pagination-number">@i</a>
+                                    }
+                                }
+                            </div>
+
+                            @if (currentPage < totalPages)
+                            {
+                                <a href="?page=@(currentPage + 1)" class="btn btn-primary btn-pagination">
+                                    Next<i class="fas fa-chevron-right ms-2"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="btn btn-outline-secondary btn-pagination disabled">
+                                    Next<i class="fas fa-chevron-right ms-2"></i>
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Quick Performance Stats -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="performance-card">
+                <h4 class="section-title mb-4">
+                    <i class="fas fa-tachometer-alt me-2"></i>Course Performance Overview
+                </h4>
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="performance-item">
+                            <div class="performance-icon bg-primary">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h3 class="performance-value">@Model.Count(c => c.IsPublished)</h3>
+                            <p class="performance-label">Published Courses</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="performance-item">
+                            <div class="performance-icon bg-warning">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <h3 class="performance-value">@Model.Count(c => !c.IsPublished)</h3>
+                            <p class="performance-label">Draft Courses</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="performance-item">
+                            <div class="performance-icon bg-success">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h3 class="performance-value">@Model.Sum(c => c.TotalStudents)</h3>
+                            <p class="performance-label">Total Enrollments</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="performance-item">
+                            <div class="performance-icon bg-info">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <h3 class="performance-value">@Model.Sum(c => c.TotalLessons)</h3>
+                            <p class="performance-label">Total Lessons</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the course "<span id="courseToDeleteTitle"></span>"?</p>
+                <p class="text-danger"><small>This action cannot be undone. All course data will be permanently lost.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Delete Course</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Reuse styles from dashboard with enhancements */
+        .teacher-top-bar {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .teacher-profile-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .teacher-avatar-container {
+            position: relative;
+        }
+
+        .teacher-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+        }
+
+        .placeholder-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            border: 3px solid #667eea;
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            background: #28a745;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 1px solid #e9ecef;
+            border-radius: 25px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .btn-notification {
+            position: relative;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            background: #f8f9fa;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Compact Hero Section */
+        .hero-section-compact {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .hero-title-compact {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .hero-bio-compact {
+            font-size: 1rem;
+            line-height: 1.5;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .hero-actions-compact {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats-compact {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        /* Enhanced Stat Cards */
+        .stat-card {
+            border: none;
+            border-radius: 20px;
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            min-height: 140px;
+        }
+
+        .gradient-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .gradient-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .gradient-4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            margin-right: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .stat-label {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .stat-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filter-badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+        }
+
+            .filter-badge.active {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+
+        .sort-dropdown {
+            min-width: 160px;
+        }
+
+        /* Modern Course Cards */
+        .course-card-modern {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+            height: 100%;
+            cursor: pointer;
+            position: relative;
+        }
+
+            .course-card-modern:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+
+        .course-image-container {
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .course-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .course-badges {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .course-status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+            .course-status-badge.published {
+                background: #28a745;
+                color: white;
+            }
+
+            .course-status-badge.draft {
+                background: #ffc107;
+                color: #212529;
+            }
+
+        .course-type-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+            .course-type-badge.free {
+                background: #17a2b8;
+                color: white;
+            }
+
+            .course-type-badge.paid {
+                background: #6c757d;
+                color: white;
+            }
+
+        .course-body {
+            padding: 1.5rem;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .course-title {
+            font-weight: 600;
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .course-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .course-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .course-stats {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #495057;
+        }
+
+        .course-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+
+        .course-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+
+            .btn-action:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                text-decoration: none;
+            }
+
+            .btn-action.btn-view:hover {
+                color: #17a2b8;
+                background: white;
+            }
+
+            .btn-action.btn-edit:hover {
+                color: #007bff;
+                background: white;
+            }
+
+            .btn-action.btn-delete:hover {
+                color: #dc3545;
+                background: white;
+            }
+
+            .btn-action.btn-analytics:hover {
+                color: #6f42c1;
+                background: white;
+            }
+
+        /* Performance Card */
+        .performance-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .performance-item {
+            padding: 1rem;
+        }
+
+        .performance-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .performance-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .performance-label {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* Pagination Styles */
+        .pagination-container {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .pagination-info {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-pagination {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            min-width: 100px;
+        }
+
+        .pagination-numbers {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pagination-number {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #6c757d;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+            .pagination-number:hover,
+            .pagination-number.active {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .hero-section-compact {
+                padding: 1.5rem 0;
+            }
+
+            .hero-title-compact {
+                font-size: 1.75rem;
+            }
+
+            .hero-stats-compact {
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+
+            .hero-actions-compact {
+                flex-direction: column;
+            }
+
+            .filter-section .d-flex {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .filter-badges {
+                flex-wrap: wrap;
+            }
+
+            .pagination-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .pagination-numbers {
+                order: -1;
+            }
+
+            .btn-pagination {
+                min-width: 120px;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Course card click - navigate to details
+            document.querySelectorAll('.course-card-modern').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't navigate if clicking on action buttons
+                    if (!e.target.closest('.course-actions') && !e.target.classList.contains('btn-action')) {
+                        const courseId = this.dataset.courseId;
+                        window.location.href = `/Course/Details/${courseId}`;
+                    }
+                });
+            });
+
+            // Search functionality with Enter key
+            const courseSearch = document.getElementById('courseSearch');
+            const courseItems = document.querySelectorAll('.course-item');
+            const noResultsMessage = document.getElementById('no-results-message');
+            const coursesContainer = document.getElementById('courses-container');
+
+            function updateCourseVisibility() {
+                const searchTerm = courseSearch.value.toLowerCase().trim();
+                const activeFilter = document.querySelector('.filter-badge.active').dataset.filter;
+                let visibleCount = 0;
+
+                courseItems.forEach(item => {
+                    const title = item.dataset.title;
+                    const status = item.dataset.status;
+                    let shouldShow = true;
+
+                    // Apply search filter
+                    if (searchTerm && !title.includes(searchTerm)) {
+                        shouldShow = false;
+                    }
+
+                    // Apply status filter
+                    if (activeFilter !== 'all' && status !== activeFilter) {
+                        shouldShow = false;
+                    }
+
+                    if (shouldShow) {
+                        item.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleCount === 0 && (searchTerm || activeFilter !== 'all')) {
+                    noResultsMessage.classList.remove('d-none');
+                    coursesContainer.classList.add('d-none');
+                } else {
+                    noResultsMessage.classList.add('d-none');
+                    coursesContainer.classList.remove('d-none');
+                }
+            }
+
+            // Search on Enter key press
+            courseSearch.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    updateCourseVisibility();
+                }
+            });
+
+            // Also search on input for real-time filtering
+            courseSearch.addEventListener('input', function() {
+                updateCourseVisibility();
+            });
+
+            // Filter functionality
+            const filterBadges = document.querySelectorAll('.filter-badge');
+
+            filterBadges.forEach(badge => {
+                badge.addEventListener('click', function() {
+                    // Remove active class from all badges
+                    filterBadges.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked badge
+                    this.classList.add('active');
+
+                    updateCourseVisibility();
+                });
+            });
+
+            // Sort functionality
+            const sortSelect = document.getElementById('sortSelect');
+
+            sortSelect.addEventListener('change', function() {
+                const sortBy = this.value;
+                const container = document.getElementById('courses-container');
+                const items = Array.from(container.querySelectorAll('.course-item'));
+
+                items.sort((a, b) => {
+                    switch(sortBy) {
+                        case 'newest':
+                            return parseInt(b.dataset.date) - parseInt(a.dataset.date);
+                        case 'oldest':
+                            return parseInt(a.dataset.date) - parseInt(b.dataset.date);
+                        case 'students':
+                            return parseInt(b.dataset.students) - parseInt(a.dataset.students);
+                        case 'rating':
+                            return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+                        default:
+                            return 0;
+                    }
+                });
+
+                // Clear container and append sorted items
+                container.innerHTML = '';
+                items.forEach(item => container.appendChild(item));
+
+                // Re-apply current filters after sorting
+                updateCourseVisibility();
+            });
+
+            // Reset filters button
+            document.getElementById('reset-filters').addEventListener('click', function() {
+                courseSearch.value = '';
+                filterBadges.forEach(b => b.classList.remove('active'));
+                document.querySelector('.filter-badge[data-filter="all"]').classList.add('active');
+                sortSelect.value = 'newest';
+                updateCourseVisibility();
+
+                // Reset to original order
+                const container = document.getElementById('courses-container');
+                const items = Array.from(container.querySelectorAll('.course-item'));
+                items.sort((a, b) => parseInt(b.dataset.date) - parseInt(a.dataset.date));
+                container.innerHTML = '';
+                items.forEach(item => container.appendChild(item));
+            });
+
+            // Delete functionality with modal
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            let currentDeleteUrl = '';
+
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const courseTitle = this.closest('.course-card-modern').querySelector('.course-title').textContent;
+                    currentDeleteUrl = this.href;
+
+                    document.getElementById('courseToDeleteTitle').textContent = courseTitle;
+                    deleteModal.show();
+                });
+            });
+
+            // Confirm delete
+            document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                window.location.href = currentDeleteUrl;
+            });
+
+            // Analytics button
+            document.getElementById('analyticsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Analytics feature coming soon!');
+            });
+
+            console.log('My Courses page loaded successfully');
+        });
+    </script>
+}

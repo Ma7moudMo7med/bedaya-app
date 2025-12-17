@@ -1,0 +1,179 @@
+﻿@using Skillup_Academy.ViewModels.HomeViewModels
+@model List<CourseNewlyInHomeViewModel>
+
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --success-color: #00A88F;
+        }
+
+
+        .search-header-pro {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-box-unified {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box-unified .form-control {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-top-left-radius: 30px !important;
+            border-bottom-left-radius: 30px !important;
+            padding: 12px 18px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-box-unified .btn-search {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 30px !important;
+            border-bottom-right-radius: 30px !important;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .filter-sidebar-enhanced {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @@media (min-width: 992px) {
+            .sticky-sidebar {
+                position: sticky;
+                top: 1.5rem;
+            }
+        }
+
+        .filter-title-btn {
+            font-weight: 600;
+            color: var(--dark-color) !important;
+            padding: 0.5rem 0;
+            transition: color 0.2s;
+            background-color: white !important;
+            border: none !important;
+        }
+
+        .filter-options label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0.3rem 0;
+            font-size: 0.9rem;
+        }
+
+        .course-card-pro {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 1.5rem;
+            height: 100%;
+        }
+
+        .course-card-pro:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .course-price {
+            font-weight: 700;
+            color: var(--success-color);
+            font-size: 1.3rem;
+        }
+
+        .course-old-price {
+            color: var(--gray-color);
+            text-decoration: line-through;
+            font-size: 0.9rem;
+        }
+
+        .btn-enroll {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+        }
+    </style>
+
+    <div class="container pt-3 ">
+        <div class="row ">
+            <div class="col-lg-12">
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 mt-3">
+                            <div class="course-card-pro">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="course-image" style="background-image: url('/img/@item.Image');"></div>
+                                    <div class="p-4">
+
+                                        <div class="course-category"> @(item.CategoryName ?? "No Category")</div>
+                                        <h3 class="course-title fw-bold">@item.Title</h3>
+                                        <div class="text-muted small mb-2">
+                                            <i class="fas fa-user-alt me-1"></i> By @(item.TeacherName ?? "No Teacher")
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center small text-muted mb-3 pt-2 border-top">
+                                            <span class="text-success fw-bold"><i class="fas fa-award me-1"></i> Bestseller</span>
+                                            <span><i class="far fa-clock me-1"></i> @item.TotalDuration m</span>
+                                        </div>
+
+                                        @if (item.IsFree)
+                                        {
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="course-price text-success">FREE</div>
+                                                <div class="text-muted small">Full Access</div>
+                                            </div>
+                                            <a asp-controller="Course" asp-action="Details" asp-route-id="@item.Id" class="btn btn-success btn-enroll w-100 mt-3" style="background-color: var(--success-color);">Start Learning</a>
+
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-primary btn-enroll w-100 mt-3">Enroll Now</a>
+                                        }
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <nav aria-label="Page navigation" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                        <li class="page-item @(ViewBag.Page == 1 ? "active" : "") "><a class="page-link" asp-controller="Home" asp-action="ViewAllCourseNewlyAdded" asp-route-page="1">1</a></li>
+                        <li class="page-item @(ViewBag.Page == 2 ? "active" : "") "><a class="page-link" asp-controller="Home" asp-action="ViewAllCourseNewlyAdded" asp-route-page="2">2</a></li>
+                        <li class="page-item @(ViewBag.Page == 3 ? "active" : "") "><a class="page-link" asp-controller="Home" asp-action="ViewAllCourseNewlyAdded" asp-route-page="3">3</a></li>
+                        <li class="page-item @(ViewBag.Page == 4 ? "active" : "") "><a class="page-link" asp-controller="Home" asp-action="ViewAllCourseNewlyAdded" asp-route-page="4">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,107 @@
+﻿
+@model CourseReviewViewModel
+
+@{
+    ViewData["Title"] = "Edit Course Review";
+}
+
+<h1>Edit Course Review</h1>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <form asp-action="Edit" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            @* The following fields are now HIDDEN so the IDs are passed back on form submission: *@
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CourseId" />
+            @* <input type="hidden" asp-for="UserId" /> *@
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Review Details</h5>
+                </div>
+                <div class="card-body">
+                    @* <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Rating" class="form-label"></label>
+                                <input asp-for="Rating" class="form-control" />
+                                <span asp-validation-for="Rating" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ReviewDate" class="form-label"></label>
+                                <input asp-for="ReviewDate" class="form-control" />
+                                <span asp-validation-for="ReviewDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div> *@
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Comment" class="form-label"></label>
+                        <textarea asp-for="Comment" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Detailed Ratings & Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ContentRating" class="form-label"></label>
+                                <input asp-for="ContentRating" class="form-control" />
+                                <span asp-validation-for="ContentRating" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="TeachingRating" class="form-label"></label>
+                                <input asp-for="TeachingRating" class="form-control" />
+                                <span asp-validation-for="TeachingRating" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="row mt-3">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <div class="form-group form-check mb-3">
+                                    <input class="form-check-input" asp-for="IsApproved" />
+                                    <label class="form-check-label" asp-for="IsApproved">
+                                        @Html.DisplayNameFor(model => model.IsApproved)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+
+            <div class="form-group pt-3 text-center">
+                <input type="submit" value="Save Changes" class="btn btn-success btn-lg px-5" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

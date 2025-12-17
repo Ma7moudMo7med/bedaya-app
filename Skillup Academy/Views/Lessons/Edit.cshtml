@@ -1,0 +1,288 @@
+﻿@model EditLessonViewModel
+
+@{
+	ViewData["Title"] = "Edit Lesson: " + Model.Title;
+	var baseMediaPath = "/img/";
+
+	var currentVideoPath = string.IsNullOrEmpty(Model.VideoUrl) ? "N/A" : baseMediaPath + Model.VideoUrl;
+	var currentAttachmentPath = string.IsNullOrEmpty(Model.AttachmentUrl) ? "N/A" : baseMediaPath + Model.AttachmentUrl;
+
+	string newVideoInputId = "NewVideoInput";
+	string videoPreviewId = "VideoPreviewNew";
+	string newAttachmentInputId = "NewAttachmentInput";
+}
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-12 col-md-10 col-lg-9">
+
+			<h1 class="display-5 mb-4 text-dark">Edit Lesson: <span class="text-primary">@Model.Title</span></h1>
+
+			<form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+				<div asp-validation-summary="ModelOnly" class="text-danger mb-4 alert alert-danger" role="alert"></div>
+
+				<input type="hidden" asp-for="Id" />
+				<input type="hidden" asp-for="CourseId" />
+				<input type="hidden" asp-for="VideoUrl" />
+				<input type="hidden" asp-for="AttachmentUrl" />
+
+				<div class="card shadow-lg border-0 rounded-3">
+
+					<div class="card-body p-4 p-md-5">
+
+
+						<h2 class="mb-4 text-primary fw-semibold border-bottom pb-2">
+							<i class="fas fa-info-circle me-2"></i> 1. Basic Details
+						</h2>
+
+						<div class="row g-4 mb-4">
+							<div class="col-md-7">
+								<div class="form-floating">
+									<input asp-for="Title" class="form-control form-control-lg" placeholder="Lesson Title" />
+									<label asp-for="Title">Lesson Title</label>
+									<span asp-validation-for="Title" class="text-danger small mt-1 d-block"></span>
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-floating">
+									<input asp-for="OrderInCourse" class="form-control form-control-lg" placeholder="Order in Course" />
+									<label asp-for="OrderInCourse">Order</label>
+									<span asp-validation-for="OrderInCourse" class="text-danger small mt-1 d-block"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-floating mb-3">
+							<textarea asp-for="Description" class="form-control" placeholder="Write a detailed description" style="height: 100px;"></textarea>
+							<label asp-for="Description">Description</label>
+							<span asp-validation-for="Description" class="text-danger small"></span>
+						</div>
+
+						<div class="form-floating mb-5">
+							<textarea asp-for="Content" class="form-control" placeholder="Text Content" style="height: 200px;"></textarea>
+							<label asp-for="Content">Text Content</label>
+							<span asp-validation-for="Content" class="text-danger small"></span>
+						</div>
+
+						<hr class="my-5" />
+
+
+						<h2 class="mb-4 text-info fw-semibold border-bottom pb-2">
+							<i class="fas fa-photo-video me-2"></i> 2. Media & Attachments
+						</h2>
+
+						<div class="row g-4 mb-5">
+
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label class="form-label fw-bold d-block text-dark">
+										<i class="fas fa-video me-2"></i> Lesson Video File
+									</label>
+
+
+									<div id="current-video-display" class="mb-3 p-2 border rounded text-center bg-white" style="min-height: 180px;">
+										<h6 class="text-muted small border-bottom pb-1 mb-2">Currently Saved Video</h6>
+										@if (currentVideoPath != "N/A")
+										{
+											<video controls class="img-fluid rounded mb-2" style="max-height: 300px; object-fit: cover; width: 100%;">
+												<source src="@currentVideoPath" type="video/mp4">
+												Your browser does not support the video tag.
+											</video>
+											<p class="text-muted small mb-0">Saved: *@Model.VideoUrl*</p>
+										}
+										else
+										{
+											<p class="text-muted small mt-2 mb-0 py-3">No Current Video Set.</p>
+										}
+										<a href="javascript:void(0)" onclick="toggleMediaInput('video', '@newVideoInputId', 'current-video-display')" class="btn btn-sm btn-outline-primary mt-2">
+											Change Video
+										</a>
+									</div>
+
+
+									<div id="video-new-input-container" class="mt-3 p-3 border rounded shadow-sm bg-white" style="display: none;">
+										<h6 class="text-info fw-bold">Upload New Video</h6>
+										<input type="file" asp-for="VideoUrlFile" id="@newVideoInputId" class="form-control" accept="video/*" onchange="previewFile('@newVideoInputId', '@videoPreviewId', 'video')" />
+										<span asp-validation-for="VideoUrlFile" class="text-danger small"></span>
+
+										<div class="mt-2 p-2 border rounded text-center bg-light">
+											<video id="@videoPreviewId" controls class="img-fluid rounded" style="display: none; max-height: 200px; object-fit: cover; width: 100%;">
+												Your browser does not support the video tag.
+											</video>
+											<p id="@(videoPreviewId + "Placeholder")" class="text-muted mb-0 py-1"><i class="fas fa-video fs-4"></i> New Preview</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label class="form-label fw-bold d-block text-dark">
+										<i class="fas fa-paperclip me-2"></i> Lesson Attachment
+									</label>
+
+
+									<div id="current-attachment-display" class="mb-3 p-2 border rounded text-center bg-white" style="min-height: 180px;">
+										<h6 class="text-muted small border-bottom pb-1 mb-2">Currently Saved File</h6>
+										@if (currentAttachmentPath != "N/A")
+										{
+											<i class="fas fa-file-alt fa-3x text-primary my-3"></i>
+											<p class="text-muted small mb-0">Saved: *@Model.AttachmentUrl*</p>
+										}
+										else
+										{
+											<p class="text-muted small mt-2 mb-0 py-3">No Current File Set.</p>
+										}
+										<a href="javascript:void(0)" onclick="toggleMediaInput('attachment', '@newAttachmentInputId', 'current-attachment-display')" class="btn btn-sm btn-outline-primary mt-2">
+											Change Attachment
+										</a>
+									</div>
+
+
+									<div id="attachment-new-input-container" class="mt-3 p-3 border rounded shadow-sm bg-white" style="display: none;">
+										<h6 class="text-info fw-bold">Upload New Attachment</h6>
+										<input type="file" asp-for="AttachmentUrlFile" id="@newAttachmentInputId" class="form-control" onchange="showAttachmentStatus('@newAttachmentInputId')" />
+										<span asp-validation-for="AttachmentUrlFile" class="text-danger small"></span>
+
+										<div class="mt-2 p-2 border rounded text-center bg-light">
+											<p id="AttachmentStatusNewPlaceholder" class="text-muted mb-0 py-3"><i class="fas fa-file-upload fs-4"></i> Ready to Upload</p>
+											<p id="AttachmentFileNameNew" class="text-success fw-bold" style="display:none;"></p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<hr class="my-5" />
+
+
+						<h2 class="mb-4 text-secondary fw-semibold border-bottom pb-2">
+							<i class="fas fa-cogs me-2"></i> 3. Lesson Settings
+						</h2>
+
+						<div class="row bg-white p-4 rounded-3 border shadow-sm">
+
+							<div class="col-md-4">
+								<div class="form-floating mb-3">
+									<input asp-for="Duration" class="form-control" placeholder="Duration" />
+									<label asp-for="Duration">Duration (Minutes)</label>
+									<span asp-validation-for="Duration" class="text-danger"></span>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="form-floating mb-3">
+									<select asp-for="Type" class="form-select form-control-lg" placeholder="Lesson Type">
+										<option value="">-- Select Lesson Type --</option>
+										<option value="0">Video</option>
+										<option value="1">Article</option>
+										<option value="2">Quiz</option>
+										<option value="3">Assignment</option>
+										<option value="4">Live</option>
+									</select>
+									<label asp-for="Type">Type</label>
+									<span asp-validation-for="Type" class="text-danger"></span>
+								</div>
+							</div>
+
+							<div class="col-md-4 d-flex align-items-center pt-2 justify-content-around">
+								<div class="form-check form-switch me-3">
+									<input class="form-check-input" type="checkbox" role="switch" asp-for="IsFree" />
+									<label class="form-check-label fw-bold" asp-for="IsFree">Is Free</label>
+								</div>
+							</div>
+						</div>
+
+						<hr class="my-5" />
+
+						@* <h5 class="mb-3 text-dark fw-bold">Course Association (Read Only)</h5>
+						<div class="row bg-light p-3 rounded-3 shadow-sm">
+							<div class="col-md-12">
+								<label asp-for="CourseId" class="form-label small text-muted">Course ID</label>
+								<input type="text" value="@Model.CourseId" class="form-control-plaintext fw-bold" readonly />
+							</div>
+						</div> *@
+
+					</div>
+				</div>
+
+
+				<div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+					<a asp-action="Index" asp-route-id="@Model.CourseId" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+						<i class="fas fa-list me-2"></i> Back to Lessons
+					</a>
+					<button type="submit" value="Save Changes" class="btn btn-success btn-lg px-5 shadow-lg rounded-pill">
+						<i class="fas fa-save me-2"></i> Save Changes
+					</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script>
+		function toggleMediaInput(type, inputId, currentDisplayId) {
+			const inputContainer = document.getElementById(type + '-new-input-container');
+			const currentDisplay = document.getElementById(currentDisplayId);
+
+			if (inputContainer.style.display === 'none') {
+				inputContainer.style.display = 'block';
+				currentDisplay.style.display = 'none';
+				document.getElementById(inputId).focus();
+			} else {
+				inputContainer.style.display = 'none';
+				currentDisplay.style.display = 'block';
+			}
+		}
+
+		function previewFile(inputId, previewId, fileType) {
+			const input = document.getElementById(inputId);
+			const previewElement = document.getElementById(previewId);
+			const placeholder = document.getElementById(previewId + "Placeholder");
+
+			if(previewElement) previewElement.style.display = 'none';
+			if(placeholder) placeholder.style.display = 'block';
+
+			if (input.files && input.files[0]) {
+				const reader = new FileReader();
+
+				reader.onload = function(e) {
+					if (fileType === 'image' || fileType === 'video') {
+						if(previewElement) previewElement.setAttribute('src', e.target.result);
+						if (fileType === 'video' && previewElement.tagName === 'VIDEO') {
+							previewElement.load();
+						}
+					}
+
+					if(previewElement) previewElement.style.display = 'block';
+					if(placeholder) placeholder.style.display = 'none';
+				};
+
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+
+		function showAttachmentStatus(inputId) {
+			const input = document.getElementById(inputId);
+			const placeholder = document.getElementById('AttachmentStatusNewPlaceholder');
+			const fileNameDisplay = document.getElementById('AttachmentFileNameNew');
+
+			if (input.files && input.files[0]) {
+				fileNameDisplay.textContent = input.files[0].name;
+				placeholder.style.display = 'none';
+				fileNameDisplay.style.display = 'block';
+			} else {
+				placeholder.style.display = 'block';
+				fileNameDisplay.style.display = 'none';
+			}
+		}
+	</script>
+}

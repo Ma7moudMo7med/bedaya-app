@@ -1,0 +1,457 @@
+﻿@model List<Core.Models.Enrollments.Enrollment>
+
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px;
+        border-radius: 20px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+    .stats-row {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px 25px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-number {
+        font-size: 28px;
+        font-weight: 700;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .course-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.25);
+        }
+
+    .course-thumbnail {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+    }
+
+    .course-body {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+    }
+
+    .course-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0 0 8px 0;
+        line-height: 1.4;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background: #e6f7ed;
+        color: #22c55e;
+    }
+
+    .status-completed {
+        background: #dbeafe;
+        color: #3b82f6;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+
+    .course-teacher {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .course-description {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        flex-grow: 1;
+    }
+
+    .course-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e2e8f0;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .course-stats {
+        display: flex;
+        gap: 15px;
+        padding: 12px;
+        background: #f8fafc;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .rating-stars {
+        color: #fbbf24;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .progress-section {
+        margin-bottom: 15px;
+    }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .progress-label {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .progress-percentage {
+        font-size: 13px;
+        color: #667eea;
+        font-weight: 700;
+    }
+
+    .progress-bar-container {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+
+    .enrolled-date {
+        font-size: 12px;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+
+    .course-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-course {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-primary-course {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .btn-primary-course:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 25px;
+        background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .empty-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 12px;
+    }
+
+    .empty-description {
+        color: #64748b;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    @@media (max-width: 768px) {
+        .stats-row
+
+    {
+        flex-direction: column;
+    }
+
+    .course-actions {
+        flex-direction: column;
+    }
+
+    .course-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    }
+</style>
+<div class="container my-3">
+     
+<div class="page-header">
+    <h2>
+        <svg width="32" height="32" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+        </svg>
+        My Courses
+    </h2>
+    <div class="stats-row">
+        <div class="stat-card">
+            <span class="stat-number">@Model.Count()</span>
+            <span class="stat-label">Total Courses</span>
+        </div>
+        @* <div class="stat-card">
+            <span class="stat-number">@Model.Count(e => e.Status == Core.Enums.StudentStatus.Active)</span>
+            <span class="stat-label">Active</span>
+        </div> *@
+        @* <div class="stat-card">
+            <span class="stat-number">@Model.Count(e => e.Status == Core.Enums.StudentStatus.Completed)</span>
+            <span class="stat-label">Completed</span>
+        </div> *@
+        @* <div class="stat-card">
+            <span class="stat-number">@(Model.Any() ? Math.Round(Model.Average(e => e.Progress)) : 0)%</span>
+            <span class="stat-label">Avg Progress</span>
+        </div> *@
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        <div class="empty-icon">
+            <svg width="60" height="60" viewBox="0 0 20 20" fill="#667eea">
+                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+            </svg>
+        </div>
+        <h3 class="empty-title">No Courses Yet</h3>
+        <p class="empty-description">You haven't enrolled in any courses yet. Start learning today!</p>
+        <a asp-controller="Course" asp-action="AllCaurseIsPublished" class="btn-course btn-primary-course" style="max-width: 250px; margin: 0 auto;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+            </svg>
+            Browse Courses
+        </a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var enrollment in Model)
+        {
+            var course = enrollment.Course;
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="course-card">
+                    @if (!string.IsNullOrEmpty(course.ThumbnailUrl))
+                    {
+                        <img src="/img/@course.ThumbnailUrl" alt="@course.Title" class="course-thumbnail" />
+                    }
+                    else
+                    {
+                        <div class="course-thumbnail" style="display: flex; align-items: center; justify-content: center;">
+                            <svg width="80" height="80" viewBox="0 0 20 20" fill="#667eea" opacity="0.3">
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z" />
+                            </svg>
+                        </div>
+                    }
+
+                    <div class="course-body">
+                        <div class="course-header">
+                            <h3 class="course-title">@course.Title</h3>
+                            <span class="status-badge status-@enrollment.Status.ToString().ToLower()">
+                                @enrollment.Status
+                            </span>
+                        </div>
+
+                        @if (course.Teacher != null)
+                        {
+                            <div class="course-teacher">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                                <span>@course.Teacher.FullName</span>
+                            </div>
+                        }
+
+                    <p class="course-description">
+                        @(course.ShortDescription?.Length > 100
+                                            ? course.ShortDescription.Substring(0, 100) + "..."
+                                            : course.ShortDescription)
+                </p>
+
+                        <div class="course-stats">
+                            <div class="stat-item">
+                                <div class="rating-stars">
+                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span>@course.AverageRating.ToString("F1")</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                                </svg>
+                                <span>@course.TotalEnrollments</span>
+                            </div>
+                        </div>
+
+                        <div class="course-meta">
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                </svg>
+                                <span>@course.TotalLessons Lessons</span>
+                            </div>
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                                </svg>
+                                <span>@course.TotalDuration min</span>
+                            </div>
+                        </div>
+
+                      @*   <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progress</span>
+                                <span class="progress-percentage">@enrollment.Progress%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" style="width: @enrollment.Progress%"></div>
+                            </div>
+                        </div> *@
+
+                        <div class="enrolled-date">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                            </svg>
+                            Enrolled: @enrollment.EnrolledAt.ToString("MMM dd, yyyy")
+                        </div>
+
+                        <div class="course-actions">
+                            <a href="/Course/Details/@course.Id" class="btn-course btn-primary-course">
+                                <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                                </svg>
+                                Continue Learning
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+</div>

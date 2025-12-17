@@ -1,0 +1,129 @@
+﻿@model SubscriptionPlan
+
+@{
+    ViewData["Title"] = "Edit Subscription Plan";
+}
+
+<h1>Edit Subscription Plan</h1>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <form asp-action="SaveEdit" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Plan Duration & Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="StartDate" class="form-label"></label>
+                                <input asp-for="StartDate" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="EndDate" class="form-label"></label>
+                                <input asp-for="EndDate" class="form-control" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <div class="form-group form-check mb-3">
+                                <input class="form-check-input" asp-for="IsActive" />
+                                <label class="form-check-label" asp-for="IsActive">
+                                    @Html.DisplayNameFor(model => model.IsActive)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Payment Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PaidAmount" class="form-label"></label>
+                                <input asp-for="PaidAmount" class="form-control" />
+                                <span asp-validation-for="PaidAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="TransactionId" class="form-label"></label>
+                                <input asp-for="TransactionId" class="form-control" />
+                                <span asp-validation-for="TransactionId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Relations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="UserId" class="form-label">User</label>
+                                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId">
+                                    <option value="">-- Select User --</option>
+                                </select>
+                                <span asp-validation-for="UserId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="SubscriptionId" class="form-label">Subscription</label>
+                                <select asp-for="SubscriptionId" class="form-control" asp-items="ViewBag.SubscriptionId">
+                                    <option value="">-- Select Subscription --</option>
+                                </select>
+                                <span asp-validation-for="SubscriptionId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="CourseId" class="form-label">Course</label>
+                                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId">
+                                    <option value="">-- Select Course --</option>
+                                </select>
+                                <span asp-validation-for="CourseId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group pt-3 text-center">
+                <input type="submit" value="Save Changes" class="btn btn-success btn-lg px-5" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <a asp-action="ShowAll" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

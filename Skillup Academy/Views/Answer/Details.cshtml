@@ -1,0 +1,53 @@
+﻿@model AnswerViewModel
+
+@{
+    ViewData["Title"] = "Answer Details";
+}
+
+<h2 class="mb-4 text-center">Answer Details</h2>
+
+<div class="card shadow-sm p-4">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Content</dt>
+        <dd class="col-sm-9">@Model.Content</dd>
+
+        <dt class="col-sm-3">Answered Date</dt>
+        <dd class="col-sm-9">@Model.AnsweredDate.ToString("g")</dd>
+
+        <dt class="col-sm-3">Is Correct</dt>
+        <dd class="col-sm-9">
+            @if (Model.IsCorrect)
+            {
+                <span class="badge bg-success">✔ Correct</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">✘ Incorrect</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Is Accepted</dt>
+        <dd class="col-sm-9">
+            @if (Model.IsAccepted)
+            {
+                <span class="badge bg-primary">Accepted</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Pending</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Question ID</dt>
+        <dd class="col-sm-9">@Model.QuestionId</dd>
+
+        <dt class="col-sm-3">User ID</dt>
+        <dd class="col-sm-9">@Model.UserId</dd>
+    </dl>
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4 me-2">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger px-4 me-2">Delete</a>
+    <a asp-action="Index" class="btn btn-secondary px-4">Back to List</a>
+</div>

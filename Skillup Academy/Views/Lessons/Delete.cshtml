@@ -1,0 +1,102 @@
+﻿@model Lesson
+
+@{
+    ViewData["Title"] = "Delete Lesson";
+    // Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-danger mb-4">Confirm Deletion</h1>
+
+            <div class="alert alert-danger shadow-sm p-4" role="alert">
+                <h3>Are you sure you want to delete the lesson: **@Model.Title**?</h3>
+                <p class="lead mt-3">This action cannot be undone. All lesson content, videos, and attachments will be permanently removed from the system.</p>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Lesson Summary</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Title)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Title)</dd>
+
+                        <dt class="col-sm-3">Course</dt>
+                        <dd class="col-sm-9">@Model.Course?.Title</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Order)</dt>
+                        <dd class="col-sm-9">Lesson #@Html.DisplayFor(model => model.Order)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Description)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Duration)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Duration) minutes</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Type)</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-primary">@Html.DisplayFor(model => model.Type)</span>
+                        </dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IsFree)</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge @(Model.IsFree ? "bg-success" : "bg-secondary")">
+                                @(Model.IsFree ? "Free" : "Paid")
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Has Video</dt>
+                        <dd class="col-sm-9">
+                            @if (!string.IsNullOrEmpty(Model.VideoUrl))
+                            {
+                                <span class="badge bg-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">No</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Has Attachment</dt>
+                        <dd class="col-sm-9">
+                            @if (!string.IsNullOrEmpty(Model.AttachmentUrl))
+                            {
+                                <span class="badge bg-info">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">No</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Content Preview</dt>
+                        <dd class="col-sm-9">
+                            @if (!string.IsNullOrEmpty(Model.Content) && Model.Content.Length > 100)
+                            {
+                                @Model.Content.Substring(0, 100)
+                                <text>...</text>
+                            }
+                            else
+                            {
+                                @Model.Content
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <hr class="mt-4" />
+
+            <form asp-action="Delete" method="post" class="text-center">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger btn-lg px-5 me-3">
+                    <i class="bi bi-trash"></i> Delete Permanently
+                </button>
+                <a asp-action="Index" asp-controller="Lessons" asp-route-id="@Model.CourseId" class="btn btn-secondary btn-lg">Cancel & Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

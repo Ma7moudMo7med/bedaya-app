@@ -1,0 +1,56 @@
+﻿@model QuestionViewModel
+
+@{
+    ViewData["Title"] = "Question Details";
+}
+
+<h2 class="mb-4 text-center">Question Details</h2>
+
+<div class="card shadow-sm p-4">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+
+        <dt class="col-sm-3">Content</dt>
+        <dd class="col-sm-9">@Model.Content</dd>
+
+        <dt class="col-sm-3">Is Resolved</dt>
+        <dd class="col-sm-9">
+            @if (Model.IsResolved)
+            {
+                <span class="badge bg-success">Resolved</span>
+            }
+            else
+            {
+                <span class="badge bg-warning text-dark">Pending</span>
+            }
+        </dd>
+
+        @if (Model.CourseId != null)
+        {
+            <dt class="col-sm-3">Course</dt>
+            <dd class="col-sm-9">@Model.CourseId</dd>
+        }
+
+        @if (Model.LessonId != null)
+        {
+            <dt class="col-sm-3">Lesson</dt>
+            <dd class="col-sm-9">@Model.LessonId</dd>
+        }
+
+        @if (Model.ExamId != null)
+        {
+            <dt class="col-sm-3">Exam</dt>
+            <dd class="col-sm-9">@Model.ExamId</dd>
+        }
+
+        <dt class="col-sm-3">User ID</dt>
+        <dd class="col-sm-9">@Model.UserId</dd>
+    </dl>
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary px-4">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger px-4 ms-2">Delete</a>
+    <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Back to List</a>
+</div>

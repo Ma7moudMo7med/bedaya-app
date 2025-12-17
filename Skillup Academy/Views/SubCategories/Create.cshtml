@@ -1,0 +1,112 @@
+﻿@model SubCategoryViewModel
+
+@{
+    ViewData["Title"] = "Create New Sub Category";
+}
+
+<style>
+    .form-floating-custom .form-control {
+        min-height: 120px;
+        resize: none;
+    }   
+</style>
+
+<div class="container py-5 my-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h1 class="display-1 fw-bolder text-dark">
+                    <i class="fas fa-tags me-2 text-info"></i> Define New Sub Category
+                </h1>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill px-4 py-2 shadow-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back to List
+                </a>
+            </div>
+
+            <div class="card shadow-xl border-0 rounded-5 overflow-hidden">
+                <div class="card-body p-5 bg-white">
+
+                    <form asp-action="SaveCreate" method="post">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show shadow-sm mb-5" role="alert">
+                            <h6 class="alert-heading fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Submission Error!</h6>
+                            Please review and correct the marked fields below.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <div class="mb-5 pb-3 border-bottom">
+                            <h5 class="text-info mb-4 fw-bold"><i class="fas fa-sitemap me-2"></i> Association & Naming</h5>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-4">
+                                        <input asp-for="Name" class="form-control form-control-lg rounded-3" placeholder="Sub Category Name" />
+                                        <label asp-for="Name">Sub Category Name</label>
+                                        <span asp-validation-for="Name" class="text-danger mt-1 d-block"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-4">
+                                        <select asp-for="CategoryId" class="form-select form-control-lg rounded-3" asp-items="@Model.Categories">
+                                            <option value="">-- Select Parent Category --</option>
+                                        </select>
+                                        <label asp-for="CategoryId">Parent Category</label>
+                                        <span asp-validation-for="CategoryId" class="text-danger mt-1 d-block"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 form-floating-custom">
+                                <label asp-for="Description" class="form-label fw-bold">Detailed Description</label>
+                                <textarea asp-for="Description" class="form-control rounded-3" rows="4" placeholder="Provide a detailed overview..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-5 justify-content-center">
+                            <div class="col-md-8 p-3 bg-light rounded-3 shadow-sm">
+                                <h6 class="fw-bold mb-2 text-dark"><i class="fas fa-power-off me-1"></i> Active Status</h6>
+                                <div class="form-check form-switch d-flex align-items-center">
+                                    <input class="form-check-input form-check-input-lg me-3" type="checkbox" role="switch" id="isActiveSwitch" asp-for="IsActive">
+                                    <div>
+                                        <label class="form-check-label fw-bold" for="isActiveSwitch">
+                                            <span class="text-dark">@Html.DisplayNameFor(model => model.IsActive)</span>
+                                        </label>
+                                        <small class="form-text text-muted d-block mt-0">Controls visibility on the platform.</small>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="IsActive" class="text-danger mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center pt-4">
+                            <button type="submit" class="btn btn-info btn-xl px-5 text-white shadow-lg rounded-pill animate__animated animate__pulse">
+                                <i class="fas fa-check-circle me-2"></i> Create Sub Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.jQuery && $.validator) {
+                $.validator.setDefaults({
+                    onfocusout: true,
+                    onkeyup: false,
+                    onclick: false
+                });
+            }
+        });
+    </script>
+}

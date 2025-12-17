@@ -1,0 +1,212 @@
+﻿@model IEnumerable<Subscription>
+
+@{
+    // ViewData["Title"] = "Subscriptions Management";
+    ViewData["Title"] = "Subscription plans Management";
+}
+
+<style>
+    .catalog-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #1a202c;
+    }
+
+    .card-grid .card {
+        border-radius: 1rem;
+        transition: transform .25s ease, box-shadow .25s ease;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+        .card-grid .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
+
+    .plan-header {
+        padding: 2rem 1.5rem;
+        border-bottom: 0;
+        border-radius: 1rem 1rem 0 0;
+        background: linear-gradient(135deg, #4c51bf 0%, #7f9cf5 100%);
+        color: #fff;
+    }
+
+    .price-display {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .description-text {
+        height: 4.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #4a5568;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1.5rem;
+    }
+
+        .feature-list li {
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+    /* 💥 التعديل لتصغير الأيقونات */
+    .feature-icon {
+        color: #48bb78;
+        margin-right: 0.5rem;
+        font-size: 0.9rem; /* تصغير حجم الأيقونة */
+        width: 1.25rem; /* لضمان محاذاة النص */
+        display: inline-block;
+        text-align: center;
+    }
+    /* 💥 نهاية التعديل */
+
+    .badge-status {
+        border-radius: 50rem;
+        padding: 0.4rem 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+    }
+
+    .card-actions {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 1rem;
+        margin-top: auto;
+    }
+
+    .btn-create-new {
+        background-color: #4c51bf;
+        border-color: #4c51bf;
+        transition: background-color 0.2s;
+    }
+
+        .btn-create-new:hover {
+            background-color: #5a62d0;
+        }
+</style>
+
+<div class="container catalog-container">
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        @* <div>
+            <h1 class="page-title mb-1">Subscriptions Catalog</h1>
+            <p class="text-muted">Manage and maintain all available subscription plans.</p>
+        </div> *@
+        <div>
+            <h1 class="page-title mb-1">Subscription plans Catalog</h1>
+            <p class="text-muted">Manage and maintain all available subscription plans.</p>
+        </div>
+        <div>
+            <a asp-action="Create" asp-controller="Subscription" class="btn btn-create-new btn-lg text-white shadow">
+                @* <i class="fas fa-plus-circle me-2"></i> Create New Subscription *@
+                <i class="fas fa-plus-circle me-2"></i> Create New Subscription plan
+            </a>
+        </div>
+    </div>
+
+    <div class="row card-grid">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                var headerBg = item.IsActive ? "linear-gradient(135deg, #4c51bf 0%, #7f9cf5 100%)" : "linear-gradient(135deg, #718096 0%, #a0aec0 100%)";
+
+                <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-lg">
+
+                        <div class="plan-header text-center" style="background: @headerBg;">
+                            <h4 class="card-title mb-2 fw-bold">@item.Name</h4>
+                            <div class="price-display">
+                                $@item.Price
+                            </div>
+                            <small class="d-block text-white-50">
+                                @if (item.DurationDays > 0)
+                                {
+                                    <span>/ @item.DurationDays days</span>
+                                }
+                                else
+                                {
+                                    <span>/ Unlimited</span>
+                                }
+                            </small>
+                        </div>
+
+                        <div class="card-body">
+
+                            <p class="description-text text-muted mb-4">
+                                @if (!string.IsNullOrEmpty(item.Description))
+                                {
+                                    @(item.Description.Length > 150 ? item.Description.Substring(0, 150) + "..." : item.Description)
+                                }
+                                else
+                                {
+                                    <text><em>No detailed description available for this plan.</em></text>
+                                }
+                            </p>
+
+                            <ul class="feature-list">
+                                <li>
+                                    <i class="fas fa-certificate feature-icon"></i>
+                                    Max Courses: <strong>@item.MaxCourses</strong>
+                                </li>
+                                <li>
+                                    <i class="fas fa-clock feature-icon"></i>
+                                    Duration: <strong>@item.DurationDays days</strong>
+                                </li>
+                                <li>
+                                    <i class="fas @(item.IsActive ? "fa-check" : "fa-ban") feature-icon @(item.IsActive ? "text-success" : "text-danger")"></i>
+                                    Status:
+                                    <span class="badge-status @(item.IsActive ? "bg-success text-white" : "bg-danger text-white")">
+                                        @(item.IsActive ? "Active" : "Disabled")
+                                    </span>
+                                </li>
+                            </ul>
+
+                            <div class="card-actions d-flex gap-2">
+                                <a asp-action="ShowDetails" asp-route-id="@item.Id" class="btn btn-outline-primary flex-fill">View Details</a>
+                                <a asp-action="Edit" asp-controller="Subscription" asp-route-id="@item.Id" class="btn btn-warning">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info shadow-sm" role="alert">
+                    <h5 class="alert-heading">No Subscription Plans Found</h5>
+                    <p>It looks like there are no subscription plans currently defined. Click **"Create New Subscription"** above to get started.</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @* Include Font Awesome for icons if not already linked in your _Layout.cshtml *@
+    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /> *@
+}

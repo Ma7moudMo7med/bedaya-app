@@ -1,0 +1,243 @@
+﻿@model SubCategory
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courses in Subcategory</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+            .page-header h1 {
+                font-weight: 800;
+                font-size: 2.5rem;
+                color: #1a237e;
+                margin-bottom: 10px;
+            }
+
+            .page-header p {
+                font-size: 1.1rem;
+                color: #616161;
+            }
+
+        /* Course Grid Structure */
+        .course-grid {
+            display: grid;
+            /* التعديل هنا لضمان 3 كروت في الصف */
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        /* Course Card Design */
+        .course-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+        }
+
+            .course-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            }
+
+        /* Thumbnail Image */
+        .course-thumbnail {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .course-thumbnail img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s;
+            }
+
+        .course-card:hover .course-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        /* Card Content */
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .card-content h3 {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #1a237e;
+                margin: 0 0 10px 0;
+                height: 50px;
+                overflow: hidden;
+            }
+
+            .card-content .short-description {
+                font-size: 0.9rem;
+                color: #666;
+                margin-bottom: 15px;
+                height: 40px;
+                overflow: hidden;
+            }
+
+        /* Footer Metadata */
+        .card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .rating-info {
+            display: flex;
+            align-items: center;
+            color: #ffc107;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+            .rating-info .fas.fa-star {
+                margin-inline-end: 5px;
+            }
+
+        /* Price/Status Tag */
+        .price-tag {
+            font-size: 1.1rem;
+            font-weight: 800;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .free-tag {
+            background-color: #e6ffed;
+            color: #28a745;
+        }
+
+        .paid-tag {
+            background-color: #f0f3f8;
+            color: #007bff;
+        }
+
+        /* Metadata Line (Teacher & Duration) */
+        .metadata-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .metadata-item i {
+            margin-inline-end: 5px;
+            color: #007bff;
+        }
+
+        /* No Data */
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.3rem;
+            color: #888;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+
+        <div class="page-header">
+            <h1>Courses Available</h1>
+            <p>A comprehensive list of courses under the current subcategory. Choose your learning journey!</p>
+        </div>
+
+        @if (Model != null && Model.Courses.Any())
+        {
+            <div class="course-grid">
+                @foreach (var course in Model.Courses)
+                {
+                    <a href="/Course/Details/@course.Id" class="card-link" style="text-decoration: none;">
+                        <div class="course-card">
+                            <div class="course-thumbnail">
+                                <img src="/img/@course.ThumbnailUrl" alt="Course Thumbnail" onerror="this.onerror=null; this.src='placeholder_image_url';" />
+                            </div>
+
+                            <div class="card-content">
+                                <div class="metadata-line">
+                                    <span class="metadata-item">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        @course.Teacher?.FullName
+                                    </span>
+                                    <span class="metadata-item">
+                                        <i class="fas fa-clock"></i>
+                                        @((course.TotalDuration / 60) > 0 ? $"{(course.TotalDuration / 60)}h " : "")@((course.TotalDuration % 60) > 0 ? $"{(course.TotalDuration % 60)}m" : "0m")
+                                    </span>
+                                </div>
+
+                                <h3>@course.Title</h3>
+
+                                <p class="short-description">@course.ShortDescription</p>
+
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="rating-info">
+                                    <i class="fas fa-star"></i>
+                                    @(course.AverageRating > 0 ? course.AverageRating.ToString("F1") : "New")
+                                </div>
+
+                                <span class="price-tag @(course.IsFree ? "free-tag" : "paid-tag")">
+                                    @(course.IsFree ? "FREE" : "Paid")
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-data">
+                <i class="fas fa-sad-cry" style="margin-inline-end: 10px;"></i>
+                <span>Oops! No courses found in this subcategory yet.</span>
+            </div>
+        }
+
+    </div>
+
+</body>
+</html>

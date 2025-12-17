@@ -1,0 +1,133 @@
+﻿@model ExamViewModel
+
+@{
+    ViewData["Title"] = "Create Exam";
+}
+
+<h1>Create Exam</h1>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Exam Create</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label asp-for="Title" class="form-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Exam Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Duration" class="form-label"></label>
+                                <input asp-for="Duration" class="form-control" />
+                                <span asp-validation-for="Duration" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="TotalQuestions" class="form-label"></label>
+                                <input asp-for="TotalQuestions" class="form-control" />
+                                <span asp-validation-for="TotalQuestions" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PassMark" class="form-label"></label>
+                                <input asp-for="PassMark" class="form-control" />
+                                <span asp-validation-for="PassMark" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="MaxAttempts" class="form-label"></label>
+                                <input asp-for="MaxAttempts" class="form-control" />
+                                <span asp-validation-for="MaxAttempts" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="AvailableFrom" class="form-label"></label>
+                                <input asp-for="AvailableFrom" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="AvailableFrom" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="AvailableTo" class="form-label"></label>
+                                <input asp-for="AvailableTo" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="AvailableTo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="CourseId" class="form-label"></label>
+                                <select asp-for="CourseId" asp-items="ViewBag.Courses" class="form-control">
+                                    <option value="">-- Select Course --</option>
+                                </select>
+                                <span asp-validation-for="CourseId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="form-group form-check mb-3">
+                                <input class="form-check-input" asp-for="IsPublished" />
+                                <label class="form-check-label" asp-for="IsPublished">
+                                    @Html.DisplayNameFor(model => model.IsPublished)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group pt-3 text-center">
+                <input type="submit" value="Create Exam" class="btn btn-primary btn-lg px-5" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,129 @@
+﻿@model IEnumerable<Core.Models.Courses.SubCategory>
+
+@{
+    ViewData["Title"] = "SubCategories Management";
+}
+
+<style>
+    .subcategory-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #e9ecef;
+        border-radius: 1.5rem !important;
+    }
+
+        .subcategory-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25) !important;
+        }
+
+    .card-icon-header {
+        background-color: #e3f2fd;
+        border-top-left-radius: 1.5rem;
+        border-top-right-radius: 1.5rem;
+        border-bottom: 3px solid var(--bs-info);
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 0.8rem;
+        z-index: 10;
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-weight: bold;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-action-edit {
+        background-color: #495057;
+        color: white !important;
+        border-color: #495057;
+    }
+
+        .btn-action-edit:hover {
+            background-color: #343a40;
+            border-color: #343a40;
+        }
+
+    .card-footer-id {
+        font-family: monospace;
+        font-size: 0.75rem;
+    }
+</style>
+
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-5 pb-2 border-bottom">
+        <h1 class="display-5 fw-bold text-dark mb-0">
+            <i class="fas fa-tags me-2 text-info"></i> SubCategories Catalog
+        </h1>
+        <a asp-action="Create" class="btn btn-info btn-lg rounded-pill px-4 text-white shadow-lg">
+            <i class="fas fa-plus-circle me-1"></i> Create New SubCategory
+        </a>
+    </div>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-lg subcategory-card rounded-5 position-relative overflow-hidden">
+
+                        <span class="status-badge badge @(item.IsActive ? "bg-success" : "bg-warning text-dark")">
+                            @(item.IsActive ? "ACTIVE" : "INACTIVE")
+                        </span>
+
+                        <div class="card-header card-icon-header text-center py-4">
+                            <i class="fas fa-hashtag fs-1 text-info"></i>
+                        </div>
+
+                        <div class="card-body d-flex flex-column p-4">
+
+                            <h4 class="card-title fw-bolder text-dark mb-1">@item.Name</h4>
+
+                            <h6 class="card-subtitle my-3 text-secondary small">
+                                <i class="fas fa-sitemap me-1 text-info"></i> Parent: <span class="fw-semibold text-dark">@(string.IsNullOrEmpty(item.Category.Name) ? "Unassigned" : item.Category.Name)</span>
+                            </h6>
+
+                            <p class="card-text small text-muted mb-4">
+                                @(string.IsNullOrEmpty(item.Description) ? "No description provided for this subcategory." :
+                                                        item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
+                    </p>
+
+                            <div class="mt-auto pt-3 border-top">
+
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-action-edit me-2 rounded-pill px-3 shadow-sm">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </a> 
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                    <i class="fas fa-trash-alt me-1"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-light border-0 text-end small text-muted py-2 card-footer-id">
+                            <span class="fw-semibold">ID:</span> @item.Id.ToString().Substring(0, 8)...
+                        </div>
+                    </div>
+                </div>
+                }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info alert-dismissible fade show p-4 shadow-sm" role="alert">
+                    <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i> No SubCategories Yet!</h4>
+                    <p>It looks like there are no subcategories in the system. Click the **'Create New SubCategory'** button above to start defining course tags.</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+
+}

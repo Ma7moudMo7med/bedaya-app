@@ -1,0 +1,447 @@
+﻿@model Skillup_Academy.ViewModels.PaymentViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Confirm Your Order - " + Model.Name;
+}
+
+<style>
+    /* Global Page Structure */
+    .checkout-page {
+        font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+        color: #0f172a;
+        background-color: transparent;
+        padding: 30px 24px;
+        box-sizing: border-box;
+    }
+
+        .checkout-page .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .checkout-page .page-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 30px;
+            color: #0f172a;
+            text-align: center;
+        }
+
+        .checkout-page .checkout-grid {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 35px;
+            align-items: start;
+        }
+
+    @@media (max-width: 992px) {
+        .checkout-page .checkout-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .checkout-page .checkout-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+    }
+
+    /* --- LEFT: SUBSCRIPTION DETAILS CARD (Improved Icons & Polish) --- */
+
+    .checkout-page .subscription-details {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .checkout-page .plan-info-box {
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        color: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(30, 58, 138, 0.4);
+    }
+
+    .checkout-page .plan-title {
+        font-size: 2rem;
+        font-weight: 900;
+        margin: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .checkout-page .plan-desc {
+        font-size: 1.05rem;
+        opacity: 0.95;
+        margin: 0;
+    }
+
+    .checkout-page .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 25px;
+    }
+
+    .checkout-page .summary-item strong {
+        display: block;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #fde047;
+        line-height: 1.2;
+    }
+
+    .checkout-page .summary-item span {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-top: 5px;
+        display: block;
+        color: rgba(255,255,255,0.95);
+    }
+
+    /* Price Section */
+    .checkout-page .price-box {
+        background-color: #fefce8;
+        border: 1px solid #facc15;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 25px;
+    }
+
+    .checkout-page .price-label-final {
+        font-size: 1.2rem;
+        color: #ca8a04;
+        font-weight: 700;
+    }
+
+    .checkout-page .price {
+        font-size: 3rem;
+        font-weight: 900;
+        color: #059669; /* Green price for positive affirmation */
+        margin: 0;
+    }
+
+    /* Features List */
+    .checkout-page .feature-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 15px;
+    }
+
+    .checkout-page .plan-metadata {
+        display: grid;
+        gap: 12px;
+    }
+
+    .checkout-page .plan-feature-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-weight: 600;
+        font-size: 0.98rem;
+        color: #374151;
+        padding: 10px 0;
+        border-bottom: 1px dashed #eef2f7;
+    }
+
+        .checkout-page .plan-feature-item:last-child {
+            border-bottom: none;
+        }
+
+    /* Enhanced Feature Icon Styling */
+    .checkout-page .feature-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: linear-gradient(180deg,#ecfdf5,#d1fae5);
+        color: #059669;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        box-shadow: 0 6px 18px rgba(6,95,70,0.06);
+    }
+
+        .checkout-page .feature-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+    /* --- RIGHT: PAYMENT METHOD CARD --- */
+
+    .checkout-page .payment-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0 0 20px 0;
+        color: #0f172a;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 10px;
+    }
+
+    .checkout-page .payment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .checkout-page .pm-option {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 16px;
+        border-radius: 14px;
+        border: 2px solid #eef2f7;
+        cursor: pointer;
+        background: #fafbff;
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+        .checkout-page .pm-option:hover {
+            border-color: #93c5fd;
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.1);
+        }
+
+        .checkout-page .pm-option input[type="radio"]:checked {
+            accent-color: #2563eb;
+        }
+
+        .checkout-page .pm-option input[type="radio"] {
+            transform: scale(1.15);
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+    .checkout-page .pm-label {
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+    .checkout-page .pm-sub {
+        color: #6b7280;
+        font-size: 0.88rem;
+        margin-top: 4px;
+    }
+
+    /* LOGO IMAGE styling */
+    .checkout-page .pm-logo {
+        width: 72px;
+        height: 36px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+        border: 1px solid #eef2f7;
+        overflow: hidden;
+    }
+
+        .checkout-page .pm-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            padding: 5px; /* Added padding for logos */
+        }
+
+    .checkout-page .payment-actions {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .checkout-page .btn-primary {
+        width: 100%;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
+        transition: background .2s ease, box-shadow .2s ease;
+    }
+
+        .checkout-page .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+            box-shadow: 0 12px 35px rgba(30, 64, 175, 0.35);
+        }
+
+        .checkout-page .btn-primary:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+    .checkout-page .note {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-top: 15px;
+        text-align: center;
+    }
+</style>
+
+<div class="checkout-page">
+    <div class="checkout-container">
+        <h1 class="page-title">🎉 Complete Your Secure Order</h1>
+
+        <div class="checkout-grid">
+            <input type="hidden" asp-for="@Model.Price" />
+            <div class="checkout-card subscription-details" aria-label="Subscription details">
+
+                <div class="plan-info-box">
+                    <h2 class="plan-title">@Model.Name</h2>
+                    <p class="plan-desc">@Model.Description</p>
+
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <strong>@Model.DurationDays</strong>
+                            <span>Subscription Days</span>
+                        </div>
+                        <div class="summary-item">
+                            <strong>@Model.MaxCourses</strong>
+                            <span>Courses Unlocked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-box">
+                    <div class="price-label-final">Final Price (VAT Included)</div>
+                    <div class="price">@Model.FormattedPrice</div>
+                </div>
+
+                <div class="subscription-features">
+                    <h3 class="feature-title">What You Get:</h3>
+                    <div class="plan-metadata" role="list">
+
+                        <div class="plan-feature-item" role="listitem">
+                            <div class="feature-icon" aria-hidden>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L19 5.5V12C19 16.97 15.5 21.7 12 23C8.5 21.7 5 16.97 5 12V5.5L12 2Z" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                    <path d="M9 11L11.5 13.5L15 9" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div>Secure and encrypted payment processing</div>
+                        </div>
+
+                        <div class="plan-feature-item" role="listitem">
+                            <div class="feature-icon" aria-hidden>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 5H21V19H3V5Z" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                    <path d="M10 9V15" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M14 9V15" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M7 15H17" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div>Full access to premium content library</div>
+                        </div>
+
+                        <div class="plan-feature-item" role="listitem">
+                            <div class="feature-icon" aria-hidden>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                    <path d="M7 12L17 12" stroke="#059666" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 7V17" stroke="#059666" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div>Official Certification upon completion</div>
+                        </div>
+                         
+                    </div>
+                </div>
+                 
+            </div>
+
+            <div class="checkout-card" aria-label="Payment selection">
+                <h3 class="payment-title">Select Payment Method</h3>
+
+                <form asp-action="Processing" asp-controller="Payment" method="post" id="paymentForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="PlanId" value="@Model.PlanId" />
+                    <input type="hidden" asp-for="@Model.Price" />
+                    <div class="payment-list" role="radiogroup" aria-label="Available payment methods">
+                        <label class="pm-option" for="pm-paymob">
+                            <input id="pm-paymob" type="radio" name="TypeMethod" value="Paymob" checked />
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="pm-logo" aria-hidden>
+                                    <img src="~/img/paymob.png" alt="Paymob" loading="lazy" />
+                                </div>
+                                <div>
+                                    <div class="pm-label">Credit / Debit Card (Paymob)</div>
+                                    <div class="pm-sub">Visa, MasterCard, and Meeza through the secure gateway</div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="pm-option" for="pm-paypal">
+                            <input id="pm-paypal" type="radio" name="TypeMethod" value="PayPal" />
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="pm-logo" aria-hidden>
+                                    <img src="~/img/paypal.png" alt="PayPal" loading="lazy" />
+                                </div>
+                                <div>
+                                    <div class="pm-label">PayPal Express Checkout</div>
+                                    <div class="pm-sub">Fast and secure payment using your PayPal balance</div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="pm-option" for="pm-fawry">
+                            <input id="pm-fawry" type="radio" name="TypeMethod" value="Fawry" />
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="pm-logo" aria-hidden>
+                                    <img src="~/img/fawry.png" alt="Fawry" loading="lazy" />
+                                </div>
+                                <div>
+                                    <div class="pm-label">Cash Payment (Fawry / Aman)</div>
+                                    <div class="pm-sub">Get a payment code to pay at kiosks or retail agents</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="payment-actions">
+                        <button type="submit" class="btn-primary" id="continueBtn">Pay @Model.FormattedPrice</button>
+                    </div>
+
+                    <div class="note">
+                        By proceeding, you agree to the Skillup Academy Terms and Conditions. Your payment is secured by industry-leading encryption.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        const root = document.querySelector('.checkout-page');
+        if (!root) return;
+
+        root.querySelectorAll('.pm-option').forEach(function(opt){
+            opt.addEventListener('click', function(e){
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+            });
+        });
+
+        const form = document.getElementById('paymentForm');
+        const btn = document.getElementById('continueBtn');
+        if (form && btn) {
+            form.addEventListener('submit', function(){
+                btn.disabled = true;
+                btn.innerText = 'Processing...';
+            });
+        }
+    })();
+</script>

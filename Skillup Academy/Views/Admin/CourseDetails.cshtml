@@ -1,0 +1,269 @@
+﻿@model Course
+
+@{
+    ViewData["Title"] = "Course Details: " + Model.Title;
+    var baseImageUrl = Url.Content("~/img/");
+    var imageUrl = string.IsNullOrEmpty(Model.ThumbnailUrl) ? Url.Content("~/img/default-course.jpg") : Url.Content("~/img/" + Model.ThumbnailUrl);
+    var previewUrl = Model.PreviewVideoUrl ?? "";
+    bool IsYouTube(string u) => !string.IsNullOrWhiteSpace(u) && (u.Contains("youtube.com") || u.Contains("youtu.be"));
+
+    var youtubeEmbed = Model.PreviewVideoUrl;
+}
+
+<style>
+    :root {
+        --card-radius: 12px;
+        --accent: #4e73df;
+        --muted: #6c757d;
+    }
+
+    .course-wrap {
+        padding: 40px 15px;
+    }
+
+    .title-lead {
+        margin-bottom: 24px;
+    }
+
+    /* layout: right small column (25%) and left large (75%) */
+    .media-panel .media-box {
+        width: 100%;
+        height: 420px;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #000;
+    }
+
+    .media-box iframe,
+    .media-box video,
+    .media-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border: 0;
+    }
+
+    /* right column thumbnail card */
+    .thumb-card .thumb-box {
+        height: 280px;
+        overflow: hidden;
+        border-radius: .6rem;
+        background: #f6f7fb;
+    }
+
+        .thumb-card .thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+    .start-btn {
+        width: 100%;
+        border-radius: 10px;
+        padding: .85rem .9rem;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(78,115,223,0.08);
+    }
+
+    .details-compact dt {
+        color: var(--muted);
+    }
+
+    .details-compact dd {
+        margin-left: 0;
+        font-weight: 700;
+    }
+
+    /* stats card (below video) */
+    .stats-card .col-md-3 {
+        min-height: 100px;
+    }
+
+    .stats-card i {
+        font-size: 1.6rem;
+    }
+
+    /* aesthetic */
+    .card.rounded-3 {
+        border-radius: 14px;
+    }
+
+    .shadow-lg-soft {
+        box-shadow: 0 8px 30px rgba(63,76,92,0.08);
+    }
+
+    /* responsive */
+    @@media (max-width: 991.98px) {
+        .media-panel .media-box {
+            height: 280px;
+        }
+
+        .thumb-card .thumb-box {
+            height: 220px;
+        }
+    }
+</style>
+
+<div class="container course-wrap">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <h1 class="display-6 fw-bold text-dark">@Model.Title</h1>
+            <p class="lead text-muted title-lead">@Model.ShortDescription</p>
+
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+                <span class="badge rounded-pill px-3 py-2 @(Model.IsPublished ? "bg-success text-white" : "bg-secondary text-white")">
+                    <i class="fas fa-bullhorn me-1"></i> @(Model.IsPublished ? "Published" : "Draft")
+                </span>
+                <span class="badge rounded-pill px-3 py-2 @(Model.IsFree ? "bg-info text-dark" : "bg-dark text-white")">
+                    @(Model.IsFree ? "FREE" : "PAID")
+                </span>
+                @if (Model.Category != null)
+                {
+                    <span class="text-muted small ms-2"><i class="fas fa-tags me-1"></i> @Model.Category.Name</span>
+                }
+                @if (Model.Teacher != null)
+                {
+                    <span class="text-muted small ms-2"><i class="fas fa-chalkboard-teacher me-1"></i> @Model.Teacher.FullName</span>
+                }
+            </div>
+
+            <div class="row g-4 media-panel align-items-start">
+
+                <div class="col-lg-9">
+                    <div class="card rounded-3 shadow-lg-soft mb-4 border-0 overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="media-box">
+                                @if (!string.IsNullOrEmpty(youtubeEmbed))
+                                {
+                                    <video muted playsinline controls
+                                           style="width:100%;height:100%;object-fit:cover;background:#000;">
+                                        <source src="/img/@Model.PreviewVideoUrl" type="video/mp4" />
+                                    </video>
+
+                                }
+                                else if (!string.IsNullOrEmpty(previewUrl) && previewUrl.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <video controls playsinline style="width:100%;height:100%;background:#000;">
+                                        <source src="@previewUrl" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                }
+                                else
+                                {
+                                    <div class="h-100 d-flex align-items-center justify-content-center text-center" style="background:#fbfcfd;">
+                                        <div class="text-muted">
+                                            <i class="fas fa-video-slash fs-1 mb-2"></i>
+                                            <div>No Preview Available</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-lg mb-5 border-0 rounded-3 overflow-hidden stats-card">
+                        <div class="card-body bg-light">
+                            <div class="row text-center">
+                                <div class="col-md-3 border-end p-3">
+                                    <i class="fas fa-users fs-3 text-primary"></i>
+                                    <h4 class="mt-2 mb-0 fw-bold">@Model.TotalEnrollments</h4>
+                                    <p class="text-muted small mb-0">Total Enrollments</p>
+                                </div>
+                                <div class="col-md-3 border-end p-3">
+                                    <i class="fas fa-star fs-3 text-warning"></i>
+                                    <h4 class="mt-2 mb-0 fw-bold">@Model.AverageRating.ToString("F1")</h4>
+                                    <p class="text-muted small mb-0">Average Rating</p>
+                                </div>
+                                <div class="col-md-3 border-end p-3">
+                                    <i class="fas fa-book-open fs-3 text-info"></i>
+                                    <h4 class="mt-2 mb-0 fw-bold">@Model.TotalLessons</h4>
+                                    <p class="text-muted small mb-0">Total Lessons</p>
+                                </div>
+                                <div class="col-md-3 p-3">
+                                    <i class="far fa-clock fs-3 text-secondary"></i>
+                                    <h4 class="mt-2 mb-0 fw-bold">@Model.TotalDuration Min</h4>
+                                    <p class="text-muted small mb-0">Total Duration</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="card thumb-card rounded-3 shadow-sm mb-3 border-0 p-3">
+                        <div class="thumb-box mb-3">
+                            @if (!string.IsNullOrEmpty(Model.ThumbnailUrl))
+                            {
+                                <img src="@imageUrl" alt="Thumbnail for @Model.Title" />
+                            }
+                            else
+                            {
+                                <div class="d-flex h-100 align-items-center justify-content-center text-muted">
+                                    <div class="text-center">
+                                        <i class="fas fa-image fs-1 mb-2"></i>
+                                        <div>No Thumbnail</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        @if (User.IsInRole("Student"))
+                        {
+                            <div class="d-grid mb-3">
+                                @if (Model.IsFree)
+                                {
+                                    <a class="btn btn-primary start-btn" asp-action="Index" asp-controller="Lessons" asp-route-id="@Model.Id" role="button">
+                                        <i class="fas fa-play me-2"></i> Start Course
+                                    </a>
+                                }
+                            </div>
+                        }
+                        <dl class="row details-compact small mb-0 text-muted">
+
+                            <dt class="col-5">Created</dt>
+                            <dd class="col-7">@Model.CreatedDate.ToShortDateString()</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            @* Full description card below everything *@
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-file-alt me-2 text-primary"></i> Full Description</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@Html.Raw(Model.Description?.Replace(System.Environment.NewLine, "<br/>") ?? "<em>No description provided.</em>")</p>
+                </div>
+            </div>
+
+            @* Timestamps & IDs *@
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-history me-2 text-primary"></i> Timestamps & IDs</h5>
+                </div>
+                <div class="card-body bg-light">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3 text-muted">Created Date:</dt>
+                        <dd class="col-sm-9">@Model.CreatedDate.ToShortDateString() (@Model.CreatedDate.ToShortTimeString())</dd>
+
+                        <dt class="col-sm-3 text-muted">Last Updated:</dt>
+                        <dd class="col-sm-9">@(Model.UpdatedDate?.ToShortDateString() ?? "N/A")</dd>
+
+                        <dt class="col-sm-3 text-muted">Published Date:</dt>
+                        <dd class="col-sm-9">@(Model.PublishedDate?.ToShortDateString() ?? "N/A")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a asp-action="ShowAll" asp-controller="Course" class="btn btn-outline-secondary btn-lg px-5">
+                    <i class="fas fa-list me-2"></i> Back to Courses
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

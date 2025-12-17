@@ -1,0 +1,50 @@
+﻿@model StudentViewModel
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<h1 class="mb-4"> Student: @Model.FullName</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.FullName)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.FullName)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.PhoneNumber)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.PhoneNumber)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.IsActive)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.IsActive)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RegistrationDate)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.RegistrationDate)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.LastLoginDate)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.LastLoginDate)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.TotalEnrollments)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.TotalEnrollments)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CompletedCourses)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.CompletedCourses)</dd>
+
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
+    <a asp-action="Index" class="btn btn-outline-secondary">Back To List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

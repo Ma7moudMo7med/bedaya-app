@@ -1,0 +1,54 @@
+﻿@model Course
+
+@{
+    ViewData["Title"] = "Delete Course";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-danger mb-4">Confirm Deletion</h1>
+
+            <div class="alert alert-danger shadow-sm p-4" role="alert">
+                <h3>Are you sure you want to delete the course: **@Model.Title**?</h3>
+                <p class="lead mt-3">This action cannot be undone. All related data (lessons, enrollments, etc.) will be permanently removed.</p>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Course Summary</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        @* Essential identifying fields only *@
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Title)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Title)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ShortDescription)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.ShortDescription)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Teacher)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Teacher.FullName)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IsPublished)</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge @(Model.IsPublished ? "bg-success" : "bg-warning text-dark")">
+                                @Html.DisplayFor(model => model.IsPublished)
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <hr class="mt-4" />
+
+            <form asp-action="DeleteConfirmed" method="post" class="text-center">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger btn-lg px-5 me-3">
+                    <i class="bi bi-trash"></i> Delete Permanently
+                </button>
+                <a asp-action="ShowAll" class="btn btn-secondary btn-lg">Cancel & Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

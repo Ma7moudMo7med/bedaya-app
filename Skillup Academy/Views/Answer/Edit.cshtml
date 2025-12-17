@@ -1,0 +1,90 @@
+﻿@model AnswerViewModel
+
+@{
+    ViewData["Title"] = "Create New Answer";
+}
+
+<h1>Create New Answer</h1>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Answer Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label asp-for="Content" class="form-label"></label>
+                        <textarea asp-for="Content" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Relations & Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="QuestionId" class="form-label">Question</label>
+                                <select asp-for="QuestionId" asp-items="ViewBag.Questions" class="form-control">
+                                    <option value="">-- Select Question --</option>
+                                </select>
+                                <span asp-validation-for="QuestionId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="UserId" class="form-label">User</label>
+                                <select asp-for="UserId" asp-items="ViewBag.Users" class="form-control">
+                                    <option value="">-- Select User --</option>
+                                </select>
+                                <span asp-validation-for="UserId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <div class="form-group form-check mb-3">
+                                <input class="form-check-input" asp-for="IsCorrect" />
+                                <label class="form-check-label" asp-for="IsCorrect">
+                                    @Html.DisplayNameFor(model => model.IsCorrect)
+                                </label>
+                            </div>
+                            <div class="form-group form-check mb-3 ms-4">
+                                <input class="form-check-input" asp-for="IsAccepted" />
+                                <label class="form-check-label" asp-for="IsAccepted">
+                                    @Html.DisplayNameFor(model => model.IsAccepted)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group pt-3 text-center">
+                <input type="submit" value="Create Answer" class="btn btn-success btn-lg px-5" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

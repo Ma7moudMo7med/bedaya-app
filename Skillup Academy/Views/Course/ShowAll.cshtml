@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Course>
+
+@{
+    ViewData["Title"] = "Courses List";
+ }
+<div class="container">
+
+
+<h1 class="mb-4">Courses Catalog</h1>
+<hr />
+
+<p>
+    @* <a asp-action="Create" class="btn btn-primary btn-lg mb-4 shadow-sm">Create New Course</a> *@
+        @if (!User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary btn-lg mb-4 shadow-sm">Create New Course</a>
+        }
+</p>
+
+<div class="row">
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+
+                    @* Card Image (Placeholder for Thumbnail) *@
+                    <img src="/img/@(string.IsNullOrEmpty(item.ThumbnailUrl) ? "/img/default-course.jpg" : item.ThumbnailUrl)"
+                         class="card-img-top" alt="@item.Title" style="height: 200px; object-fit: cover;">
+
+                    <div class="card-body d-flex flex-column">
+
+                        @* Title & Status Badges *@
+                        <h5 class="card-title text-primary">@Html.DisplayFor(modelItem => item.Title)</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@Html.DisplayFor(modelItem => item.ShortDescription)</h6>
+
+                        <div class="mb-3">
+                            <span class="badge @(item.IsPublished ? "bg-success" : "bg-warning text-dark") me-2">
+                                @(item.IsPublished ? "Published" : "Draft")
+                            </span>
+                            <span class="badge @(item.IsFree ? "bg-info" : "bg-dark")">
+                                @(item.IsFree ? "Free" : "Paid")
+                            </span>
+                        </div>
+
+                        @* Metrics *@
+                        <div class="row row-cols-2 g-2 mb-3 small text-muted">
+                            <div class="col">
+                                <i class="bi bi-star-fill text-warning me-1"></i> @Html.DisplayFor(modelItem => item.AverageRating) Rating
+                            </div>
+                            <div class="col">
+                                 
+                                <i class="bi bi-clock me-1"></i> @Html.DisplayFor(modelItem => item.TotalDuration) min
+                            </div>
+                            <div class="col">
+                                <i class="bi bi-people-fill me-1"></i> @Html.DisplayFor(modelItem => item.TotalEnrollments) Enrolled
+                            </div>
+                            <div class="col">
+                                <i class="bi bi-journals me-1"></i> @Html.DisplayFor(modelItem => item.TotalLessons) Lessons
+                            </div>
+                        </div>
+
+                        @* Actions (Pushed to the bottom) *@
+                        <div class="mt-auto pt-3 border-top">
+                            @* <a asp-controller="Course" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm me-1">Details</a> *@
+                            @if (User.IsInRole("Admin"))
+                            {
+                                    <a asp-controller="Admin" asp-action="CourseDetails" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm me-1">Details</a>
+                            }
+                            @if (User.IsInRole("Instructor"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" style="color:black" class="btn btn-secondary btn-sm me-1">Edit</a>
+                                    <a asp-controller="Teacher" asp-action="CourseDetails" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm me-1">Details</a>
+                            }
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                            <a asp-action="Index" asp-Controller="Lessons" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Lessons</a>
+                            <a asp-action="Index" asp-Controller="CourseReviews" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Reviews</a>
+                        </div>
+                    </div>
+
+                    <div class="card-footer text-muted small">
+                        Created: @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                No courses found. Start by creating a new one!
+            </div>
+        </div>
+    }
+</div>
+</div>
+@section Scripts {
+    @* Add a reference to Bootstrap Icons if you're using them, or remove the <i> tags if not. *@
+    @* <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"> *@
+}

@@ -1,0 +1,27 @@
+﻿#accordionSidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1031;
+}
+
+/* Fix Topbar */
+.topbar {
+    position: fixed !important;
+    top: 0;
+    left: 224px !important; /* نفس عرض الـsidebar */
+    right: 0;
+    z-index: 1032;
+}
+
+/* Push content down because topbar is fixed */
+#content {
+    margin-top: 6rem !important;
+}
+
+/* Push content right because sidebar is fixed */
+#content-wrapper {
+    margin-left: 224px !important;
+}

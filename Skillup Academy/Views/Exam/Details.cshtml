@@ -1,0 +1,79 @@
+﻿@model ExamViewModel
+
+@{
+    ViewData["Title"] = "Exam Details";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3 text-primary">Exam Details</h2>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Duration (Minutes)</dt>
+        <dd class="col-sm-9">@Model.Duration</dd>
+
+        <dt class="col-sm-3">Total Questions</dt>
+        <dd class="col-sm-9">@Model.TotalQuestions</dd>
+
+        <dt class="col-sm-3">Pass Mark</dt>
+        <dd class="col-sm-9">@Model.PassMark</dd>
+
+        <dt class="col-sm-3">Max Attempts</dt>
+        <dd class="col-sm-9">@Model.MaxAttempts</dd>
+
+        <dt class="col-sm-3">Is Published</dt>
+        <dd class="col-sm-9">
+            @if (Model.IsPublished)
+            {
+                <span class="badge bg-success">Published</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Not Published</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Available From</dt>
+        <dd class="col-sm-9">
+            @(Model.AvailableFrom.HasValue? Model.AvailableFrom.Value.ToString("yyyy-MM-dd HH:mm") : "Not Set")
+        </dd>
+
+        <dt class="col-sm-3">Available To</dt>
+        <dd class="col-sm-9">
+            @(Model.AvailableTo.HasValue? Model.AvailableTo.Value.ToString("yyyy-MM-dd HH:mm") : "Not Set")
+        </dd>
+
+        <dt class="col-sm-3">Course</dt>
+        <dd class="col-sm-9">
+            @{
+                var selectedCourse = Model.Courses?.FirstOrDefault(c => c.Value == Model.CourseId.ToString());
+                @if (selectedCourse != null)
+                {
+                    @selectedCourse.Text
+                }
+                else
+                {
+                    @:Unknown
+                }
+
+            }
+        </dd>
+    </dl>
+
+    <hr />
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+            <i class="bi bi-pencil-square"></i> Edit
+        </a>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to List
+        </a>
+    </div>
+</div>

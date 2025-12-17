@@ -1,0 +1,115 @@
+﻿@model Skillup_Academy.ViewModels.SubscriptionsViewModels.EditSubscriptionViewModel
+@using Core.Enums
+
+@{
+    ViewData["Title"] = "Edit Subscription";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center font-weight-light my-4">Edit Subscription Plan</h2>
+                </div>
+                <div class="card-body p-5">
+
+                    <form asp-action="SaveEdit" method="post">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                            Please check the required fields below.
+                        </div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-5">
+                            <h4 class="mb-3 text-secondary border-bottom pb-2">Basic Plan Information</h4>
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Name" class="form-label">Plan Name</label>
+                                    <input asp-for="Name" class="form-control" placeholder="e.g., Premium Monthly Access" />
+                                    <span asp-validation-for="Name" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Type" class="form-label">Plan Type</label>
+                                    <select asp-for="Type" class="form-control form-select" asp-items="Html.GetEnumSelectList<Core.Enums.SubscriptionType>()">
+                                        <option value="">-- Select Type --</option>
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <label asp-for="Description" class="form-label">Description</label>
+                                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Briefly describe the features of this plan."></textarea>
+                                    <span asp-validation-for="Description" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h4 class="mb-3 text-warning border-bottom pb-2">Pricing and Limits</h4>
+                            <div class="row">
+
+                                <div class="col-md-4 mb-3">
+                                    <label asp-for="Price" class="form-label">Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="Price" class="form-control" type="number" step="0.01" placeholder="0.00" />
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label asp-for="DurationDays" class="form-label">Duration (Days)</label>
+                                    <input asp-for="DurationDays" class="form-control" type="number" placeholder="e.g., 30" />
+                                    <span asp-validation-for="DurationDays" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label asp-for="MaxCourses" class="form-label">Max Courses Allowed</label>
+                                    <input asp-for="MaxCourses" class="form-control" type="number" placeholder="e.g., 5" />
+                                    <span asp-validation-for="MaxCourses" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="mb-3 text-info border-bottom pb-2">Plan Status</h4>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" asp-for="IsActive">
+                                <label class="form-check-label" asp-for="IsActive">
+                                    @Html.DisplayNameFor(model => model.IsActive) (Enable/Disable Plan)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 pt-4">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="mt-4 text-center d-flex justify-content-center gap-3">
+                <a asp-action="ShowAll" class="btn btn-outline-secondary">
+                    <i class="fas fa-list"></i> Back to Subscription List
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

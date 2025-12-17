@@ -1,0 +1,302 @@
+﻿@model Skillup_Academy.ViewModels.StudentsViewModels.StudentEditProfileViewModel
+@{
+    Layout = null;
+}
+
+<style>
+    .edit-profile-modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 20px 20px 0 0;
+        border: none;
+    }
+
+        .edit-profile-modal-header .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .edit-profile-modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+        }
+
+            .edit-profile-modal-header .btn-close:hover {
+                opacity: 1;
+            }
+
+    .edit-profile-modal-body {
+        padding: 25px;
+        background: #f8f9fa;
+        max-height: calc(100vh - 250px);
+        overflow-y: auto;
+    }
+
+    .profile-form-group {
+        margin-bottom: 18px;
+    }
+
+    .profile-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .profile-input {
+        width: 100%;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 14px;
+        outline: none;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+        .profile-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .profile-input::placeholder {
+            color: #a0aec0;
+        }
+
+    .file-input-wrapper {
+        position: relative;
+        background: white;
+        border: 2px dashed #e2e8f0;
+        border-radius: 10px;
+        padding: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: block;
+    }
+
+        .file-input-wrapper:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.02);
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+    .file-input-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+    }
+
+    .file-input-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .file-input-text {
+        color: #718096;
+        font-size: 13px;
+    }
+
+    .file-input-hint {
+        color: #a0aec0;
+        font-size: 11px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+    }
+
+    .btn:active {
+        transform: translateY(0) !important;
+    }
+
+    .alert-custom {
+        border-radius: 10px;
+        border: none;
+        padding: 12px 16px;
+        margin-bottom: 15px;
+        background: #fff5f5;
+        border-left: 4px solid #f56565;
+    }
+
+        .alert-custom ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .alert-custom li {
+            color: #c53030;
+            margin-bottom: 5px;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    @@media (max-width: 768px) {
+        .form-row
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>
+
+<script>
+    function displayFileName(input) {
+        const fileText = document.getElementById('fileInputText');
+        if (input.files && input.files[0]) {
+            fileText.innerHTML = '<strong style="color: #667eea;">✓ Selected:</strong> ' + input.files[0].name;
+        }
+    }
+</script>
+
+<div class="edit-profile-modal-header">
+    <h5 class="modal-title">
+        <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg>
+        Edit Profile
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="edit-profile-modal-body">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert-custom">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="SaveEditProfile" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Full Name -->
+        <div class="profile-form-group">
+            <label class="profile-label">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
+                Full Name
+            </label>
+            <input asp-for="FullName" class="profile-input" placeholder="Enter your full name" />
+        </div>
+
+        <!-- Username & Email (2 columns) -->
+        <div class="form-row">
+            <div class="profile-form-group">
+                <label class="profile-label">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                    </svg>
+                    Username
+                </label>
+                <input asp-for="UserName" class="profile-input" placeholder="Enter your username" />
+            </div>
+
+            <div class="profile-form-group">
+                <label class="profile-label">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                    Email
+                </label>
+                <input asp-for="Email" class="profile-input" placeholder="Enter your email" />
+            </div>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="profile-form-group">
+            <label class="profile-label">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                </svg>
+                Phone Number
+            </label>
+            <input asp-for="PhoneNumber" class="profile-input" placeholder="Enter your phone number" />
+        </div>
+
+        <!-- Profile Picture Upload -->
+        <div class="profile-form-group">
+            <label class="profile-label">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                </svg>
+                Profile Picture
+            </label>
+            <label for="fileInput" class="file-input-wrapper">
+                <input asp-for="NewProfilePicture" type="file" accept="image/*" id="fileInput" onchange="displayFileName(this)" />
+                <div class="file-input-content">
+                    <div class="file-input-icon">
+                        <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="file-input-text" id="fileInputText">
+                        <strong>Click to upload</strong> or drag and drop
+                    </div>
+                    <div class="file-input-hint">
+                        PNG, JPG or JPEG (max. 5MB)
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Save Button -->
+        <div style="margin-top: 30px;">
+            <button type="submit" class="btn btn-primary w-100" style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border: none;
+                padding: 15px;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                transition: all 0.3s ease;">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
+                </svg>
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>

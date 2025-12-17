@@ -1,0 +1,251 @@
+﻿@model CourseCategory
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subcategories of @Model?.Name</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        body {
+            background-color: #f0f3f8;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            direction: ltr; /* Set direction to LTR for English static text */
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 40px 10px 30px;
+            color: #1a237e;
+            background-color: #ffffff;
+            border-bottom: 4px solid #007bff;
+            margin-bottom: 30px;
+        }
+
+            .page-header h1 {
+                font-weight: 800;
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+                color: #121a57;
+            }
+
+            .page-header p {
+                color: #616161;
+                font-size: 1.25rem;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+        .sub-category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 0 60px;
+        }
+
+        .category-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            border-left: 6px solid var(--card-accent-color, #007bff);
+            display: flex;
+            flex-direction: column;
+            min-height: 250px;
+        }
+
+            .category-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+                border-left-color: var(--card-accent-hover-color, #0056b3);
+            }
+
+            .category-card h2 {
+                font-size: 1.6rem;
+                color: #121a57;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                font-weight: 700;
+            }
+
+            .category-card p.description {
+                color: #555;
+                font-size: 1.0rem;
+                line-height: 1.6;
+                margin-bottom: 20px;
+                height: 3.2em;
+                max-height: 3.2em;
+                overflow: hidden;
+                flex-grow: 1;
+            }
+
+        .card-icon {
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+            .card-icon i {
+                font-size: 2.2rem;
+                color: #007bff;
+                background-color: #e6f0ff;
+                padding: 12px;
+                border-radius: 50%;
+            }
+
+        .course-count {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1rem;
+            color: #4a4a4a;
+            font-weight: 600;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            margin-top: auto;
+        }
+
+            .course-count .count-info {
+                display: flex;
+                align-items: center;
+            }
+
+                .course-count .count-info i {
+                    margin-right: 8px;
+                    font-size: 1.1rem;
+                    color: #28a745;
+                }
+
+            .course-count .fas.fa-arrow-right {
+                font-size: 1.2rem;
+                color: #007bff;
+                transition: transform 0.3s;
+            }
+
+        .card-link:hover .fas.fa-arrow-right {
+            transform: translateX(5px);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-active {
+            background-color: #e6ffed;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .card-link {
+            text-decoration: none;
+            display: block;
+        }
+
+        .no-data {
+            padding: 80px 20px;
+            background-color: #fff;
+            margin: 40px auto;
+            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            font-size: 1.3rem;
+            text-align: center;
+            border-left: 6px solid #dc3545;
+        }
+
+            .no-data span {
+                font-weight: 600;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <h1>Explore Specialized Subcategories </h1>
+        <p>A curated selection of paths under the  @Model?.Name  category to guide your advanced learning journey.</p>
+    </div>
+
+    <div class="main-container">
+
+        @if (Model?.SubCategories != null && Model.SubCategories.Any())
+        {
+            <div class="sub-category-grid">
+                @foreach (var subCategory in Model.SubCategories)
+                {
+                    string accentColor = subCategory.IsActive ? "#007bff" : "#ffc107";
+                    string hoverColor = subCategory.IsActive ? "#0056b3" : "#e0a800";
+
+                    <a asp-controller="SubCategories" asp-action="GetByIdWithCourse" asp-route-Id="@subCategory.Id" class="card-link">
+                        <div class="category-card"
+                             style="--card-accent-color: @accentColor; --card-accent-hover-color: @hoverColor;">
+
+                            <span class="status-badge @(subCategory.IsActive ? "status-active" : "status-inactive")">
+                                @(subCategory.IsActive ? "ACTIVE" : "INACTIVE")
+                            </span>
+
+                            <div class="card-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+
+                            <h2>@subCategory.Name</h2>
+
+                            <p class="description">
+                                @(string.IsNullOrWhiteSpace(subCategory.Description) ? "No description is currently available for this subcategory. Click to learn more." : subCategory.Description)
+                            </p>
+
+                            <div class="course-count">
+                                <div class="count-info">
+                                    <i class="fas fa-book"></i>
+                                    <span>
+                                        @subCategory.Courses?.Count() @((subCategory.Courses?.Count() == 1) ? "Course" : "Courses") Available
+                                    </span>
+                                </div>
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-data">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 10px; color: #dc3545;"></i>
+                <span>No subcategories were found under the category **@Model?.Name**.</span>
+            </div>
+        }
+
+    </div>
+
+</body>
+</html>

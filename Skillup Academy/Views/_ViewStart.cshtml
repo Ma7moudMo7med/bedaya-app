@@ -1,0 +1,12 @@
+﻿@if (User.IsInRole("Admin"))
+{
+    Layout = "_AdminLayout";
+}
+else if (User.IsInRole("Instructor"))
+{ 
+    Layout = "_TeacherLayout";
+}
+else
+{
+    Layout = "_LayoutN";
+}

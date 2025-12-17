@@ -1,0 +1,101 @@
+﻿@model IEnumerable<QuestionListViewModel>
+
+@{
+    ViewData["Title"] = "Questions Management";
+}
+
+<h1 class="mb-4">Questions Catalog</h1>
+<hr />
+
+<p>
+    <a asp-action="Create" class="btn btn-primary btn-lg mb-4 shadow-sm">Create New Question</a>
+</p>
+
+<div class="row">
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+
+                    <div class="card-body d-flex flex-column">
+
+                        @* Title & Status Badges *@
+                        <h5 class="card-title text-primary">@item.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@item.CourseTitle</h6>
+
+                        <div class="mb-3">
+                            <span class="badge @(item.IsResolved ? "bg-success" : "bg-warning text-dark") me-2">
+                                @(item.IsResolved ? "Resolved" : "Unresolved")
+                            </span>
+                            <span class="badge bg-info">
+                                @item.AskedDate.ToString("dd MMM yyyy")
+                            </span>
+                        </div>
+
+                        @* Content *@
+                        <p class="card-text small text-muted mb-3">
+                            @if (!string.IsNullOrEmpty(item.Content) && item.Content.Length > 100)
+                            {
+                                @item.Content.Substring(0, 100)
+                                <text>...</text>
+                            }
+                            else
+                            {
+                                @item.Content
+                            }
+                        </p>
+
+                        @* Metrics *@
+                        <div class="row row-cols-1 g-2 mb-3 small text-muted">
+                            <div class="col">
+                                <i class="bi bi-journals me-1"></i> Course: @item.CourseTitle
+                            </div>
+                            @if (!string.IsNullOrEmpty(item.LessonTitle))
+                            {
+                                <div class="col">
+                                    <i class="bi bi-file-text me-1"></i> Lesson: @item.LessonTitle
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(item.ExamTitle))
+                            {
+                                <div class="col">
+                                    <i class="bi bi-clipboard-check me-1"></i> Exam: @item.ExamTitle
+                                </div>
+                            }
+                            <div class="col">
+                                <i class="bi bi-calendar me-1"></i> Asked: @item.AskedDate.ToString("dd MMM yyyy")
+                            </div>
+                        </div>
+
+                        @* Actions (Pushed to the bottom) *@
+                        <div class="mt-auto pt-3 border-top">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm me-1">Details</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" style="color:black" class="btn btn-secondary btn-sm me-1">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                            <a asp-action="Index" asp-controller="Answers" asp-route-questionId="@item.Id" class="btn btn-outline-info btn-sm">Answers</a>
+                        </div>
+                    </div>
+
+                    <div class="card-footer text-muted small">
+                        Question ID: @item.Id
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                No questions found. Start by creating a new one!
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @* Add a reference to Bootstrap Icons if you're using them, or remove the <i> tags if not. *@
+    @* <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"> *@
+}

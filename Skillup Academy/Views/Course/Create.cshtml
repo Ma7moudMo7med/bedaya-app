@@ -1,0 +1,244 @@
+﻿@model Skillup_Academy.ViewModels.CoursesViewModels.CreateCourseViewModel
+
+@{
+    ViewData["Title"] = "Create New Course";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-12 col-lg-10">
+
+			<h1 class="display-4 mb-5 text-primary fw-bold text-center">
+				<i class="bi bi-journal-plus me-3"></i> Create New Course
+			</h1>
+
+			<form asp-action="Create" method="post" enctype="multipart/form-data">
+
+				<div asp-validation-summary="ModelOnly" class="text-danger mb-4 alert alert-danger" role="alert"></div>
+
+				<div class="card shadow-lg border-0 rounded-4">
+
+					<div class="card-body p-4 p-md-5">
+
+						<h2 class="mb-4 text-primary fw-semibold border-bottom pb-2">
+							<i class="bi bi-1-circle-fill me-2"></i> 1. Basic Course Details
+						</h2>
+
+						<div class="row g-4 mb-4">
+							<div class="col-md-7">
+								<div class="form-floating">
+									<input asp-for="Title" class="form-control form-control-lg" placeholder="Full Course Title" />
+									<label asp-for="Title">Course Title</label>
+									<span asp-validation-for="Title" class="text-danger small mt-1 d-block"></span>
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-floating">
+									<input asp-for="ShortDescription" class="form-control form-control-lg" placeholder="A catchy short description" />
+									<label asp-for="ShortDescription">Short Description</label>
+									<span asp-validation-for="ShortDescription" class="text-danger small mt-1 d-block"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-floating mb-5">
+							<textarea asp-for="Description" class="form-control" placeholder="Write a detailed course description" style="height: 250px;"></textarea>
+							<label asp-for="Description">Detailed Description</label>
+							<span asp-validation-for="Description" class="text-danger small"></span>
+							<small class="form-text text-muted">A thorough description helps students decide if this course is right for them.</small>
+						</div>
+
+						<hr class="my-5" />
+
+						<h2 class="mb-4 text-info fw-semibold border-bottom pb-2">
+							<i class="bi bi-2-circle-fill me-2"></i> 2. Media Assets and Preview
+						</h2>
+
+						<div class="row g-4 mb-5">
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label asp-for="ThumbnailUrl" class="form-label fw-bold d-block text-dark">
+										<i class="bi bi-image-fill me-2"></i> Course Thumbnail Image
+									</label>
+									<input type="file" asp-for="ThumbnailUrl" id="ThumbnailInput" class="form-control" accept="image/*" onchange="previewFile('ThumbnailInput', 'ThumbnailPreview', 'image')" />
+									<span asp-validation-for="ThumbnailUrl" class="text-danger small"></span>
+									<small class="form-text text-muted">Recommended: 16:9 ratio. Used for catalog display.</small>
+
+									@* Image Preview *@
+									<div class="mt-3 p-2 border rounded text-center bg-white" style="min-height: 200px;">
+										<img id="ThumbnailPreview" src="#" alt="Image Preview" class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover; width: 100%;" />
+										<p id="ThumbnailPlaceholder" class="text-muted mb-0 py-5"><i class="bi bi-image fs-1"></i><br>Image Preview</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label asp-for="PreviewVideo" class="form-label fw-bold d-block text-dark">
+										<i class="bi bi-play-circle-fill me-2"></i> Course Preview Video
+									</label>
+									<input type="file" asp-for="PreviewVideo" id="VideoInput" class="form-control" accept="video/*" onchange="previewFile('VideoInput', 'VideoPreview', 'video')" />
+									<span asp-validation-for="PreviewVideo" class="text-danger small"></span>
+									<small class="form-text text-muted">Max 60 seconds. Helps potential students preview your style.</small>
+
+									@* Video Preview *@
+									<div class="mt-3 p-2 border rounded text-center bg-white" style="min-height: 200px;">
+										<video id="VideoPreview" controls class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover; width: 100%;">
+											Your browser does not support the video tag.
+										</video>
+										<p id="VideoPlaceholder" class="text-muted mb-0 py-5"><i class="bi bi-play-btn fs-1"></i><br>Video Preview</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<hr class="my-5" />
+
+						<h2 class="mb-4 text-success fw-semibold border-bottom pb-2">
+							<i class="bi bi-3-circle-fill me-2"></i> 3. Pricing, Categorization, and Launch
+						</h2>
+
+						<div class="row g-4">
+
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label class="form-label fw-bold text-dark mb-3">
+										<i class="bi bi-tags-fill me-2"></i> Course Categorization
+									</label>
+
+									@* Category Dropdown (Assuming ViewData/SelectLists are populated) *@
+									<div class="mb-4">
+										<label asp-for="CategoryId" class="form-label">Main Category <span class="text-danger">*</span></label>
+										@* NOTE: Replace 'ViewBag.Category' with your actual ViewData/SelectList *@
+										<select asp-for="CategoryId" asp-items="ViewBag.Category" class="form-select form-select-lg" required>
+											<option value="">-- Select Main Category --</option>
+										</select>
+										<span asp-validation-for="CategoryId" class="text-danger small"></span>
+									</div>
+
+									@* SubCategory Dropdown *@
+									<div class="mb-3">
+										<label asp-for="SubCategoryId" class="form-label">Subcategory (Optional)</label>
+										@* NOTE: Replace 'ViewBag.SubCategory' with your actual ViewData/SelectList *@
+										<select asp-for="SubCategoryId" asp-items="ViewBag.SubCategory" class="form-select form-select-lg">
+											<option value="">-- Select Subcategory (Optional) --</option>
+										</select>
+										<span asp-validation-for="SubCategoryId" class="text-danger small"></span>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label class="form-label fw-bold text-dark mb-3">
+										<i class="bi bi-coin me-2"></i> Pricing and Visibility Options
+									</label>
+
+
+									@* Is Free Switch *@
+									<div class="form-check form-switch mb-4 p-3 border rounded-3 bg-white">
+										<input class="form-check-input" type="checkbox" role="switch" id="isFreeSwitch" asp-for="IsFree" onchange="togglePriceField(this.checked)" />
+										<label class="form-check-label ms-2 fw-bold" for="isFreeSwitch">
+											<i class="bi bi-gift-fill me-1 text-success"></i> Free Course
+										</label>
+										<p class="text-muted small mt-1">Check this to set the course price to zero.</p>
+									</div>
+
+									@* Is Published Switch *@
+									<div class="form-check form-switch mb-3 p-3 border rounded-3 bg-white">
+										<input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitch" asp-for="IsPublished" />
+										<label class="form-check-label ms-2 fw-bold" for="isPublishedSwitch">
+											<i class="bi bi-rocket-takeoff-fill me-1 text-info"></i> Publish Immediately
+										</label>
+										<p class="text-muted small mt-1">Make the course visible to the public upon saving.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div> @* end card-body *@
+				</div> @* end card *@
+
+				<div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+					<a asp-action="MyCourses" asp-controller="Teacher" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+						<i class="bi bi-arrow-left me-2"></i> Back to List
+					</a>
+					<button type="submit" class="btn btn-success btn-lg px-5 shadow-lg rounded-pill">
+						<i class="bi bi-check-circle me-2"></i> Save & Create Course
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Function to show/hide the Price field based on the "Is Free" switch
+        function togglePriceField(isFree) {
+            const priceField = document.getElementById('price-field');
+ 
+            if (isFree) {
+                // Hide price field
+                priceField.style.display = 'none';
+                // Clear value and remove required attribute (if Price is required)
+                if(priceInput) {
+                    priceInput.value = '';
+                    priceInput.removeAttribute('required');
+                }
+            } else {
+                // Show price field
+                priceField.style.display = 'block';
+                // Restore required attribute (if Price is required)
+                if(priceInput) {
+                    priceInput.setAttribute('required', 'required');
+                }
+            }
+        }
+
+        // JavaScript function to read the file and display the preview
+        function previewFile(inputId, previewId, fileType) {
+            const input = document.getElementById(inputId);
+            const previewElement = document.getElementById(previewId);
+            const placeholder = document.getElementById(previewId.replace('Preview', 'Placeholder'));
+
+            // Reset and hide the preview/show placeholder
+            previewElement.style.display = 'none';
+            placeholder.style.display = 'block';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    if (fileType === 'image' || fileType === 'video') {
+                        previewElement.setAttribute('src', e.target.result);
+                        if (fileType === 'video') {
+                            previewElement.load();
+                        }
+                    }
+
+                    // Show the preview and hide the placeholder
+                    previewElement.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+
+                // Read the file content as a Data URL
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Initial call on page load to set the price field state
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const isFreeSwitch = document.getElementById('isFreeSwitch');
+            if (isFreeSwitch) {
+                // Ensure the price field is correctly initialized based on the checkbox state
+                togglePriceField(isFreeSwitch.checked);
+            }
+        });
+    </script>
+}

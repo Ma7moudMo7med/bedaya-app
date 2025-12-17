@@ -1,0 +1,105 @@
+﻿@model Skillup_Academy.ViewModels.SubscriptionsViewModels.SubscriptionPlanViewModel
+
+@{
+    ViewData["Title"] = "Create Subscription Plan";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center font-weight-light my-4">Create New Subscription Plan</h2>
+                </div>
+                <div class="card-body p-4">
+
+                    <form asp-action="SaveCreate" method="post">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                            Please correct the following errors:
+                        </div>
+
+                        <div class="mb-5">
+                            <h4 class="mb-3 text-secondary border-bottom pb-2">Subscription Details</h4>
+                            <div class="row">
+
+                                <div class="col-12 mb-3">
+                                    <label asp-for="SubscriptionId" class="form-label">Select Subscription</label>
+                                    <select asp-for="SubscriptionId" class="form-control form-select" asp-items="@(ViewBag.Subscriptions as SelectList)">
+                                        <option value="">-- Choose Subscription --</option>
+                                    </select>
+                                    <span asp-validation-for="SubscriptionId" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h4 class="mb-3 text-info border-bottom pb-2">Period & Status</h4>
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="StartDate" class="form-label">Start Date</label>
+                                    <input asp-for="StartDate" class="form-control" type="date" />
+                                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="EndDate" class="form-label">End Date</label>
+                                    <input asp-for="EndDate" class="form-control" type="date" />
+                                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+
+                            <div class="form-check form-switch mt-3">
+                                <input class="form-check-input" type="checkbox" role="switch" asp-for="IsActive">
+                                <label class="form-check-label" asp-for="IsActive">
+                                    @Html.DisplayNameFor(model => model.IsActive)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="mb-3 text-success border-bottom pb-2">Payment Details</h4>
+                            <div class="row">
+
+                                <div class="col-12 mb-3">
+                                    <label asp-for="PaidAmount" class="form-label">Paid Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="PaidAmount" class="form-control" placeholder="0.00" type="number" step="0.01" />
+                                    </div>
+                                    <span asp-validation-for="PaidAmount" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 pt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Create Plan
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a asp-action="ShowAll" class="btn btn-outline-secondary">
+                    Back to List
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

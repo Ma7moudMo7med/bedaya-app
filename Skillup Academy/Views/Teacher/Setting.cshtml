@@ -1,0 +1,464 @@
+﻿@using Skillup_Academy.ViewModels.TeacherDashboard
+@model TeacherInfoVM
+
+@{
+    ViewData["Title"] = "Teacher Settings";
+    Layout = "/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <h1 class="display-4 mb-5 text-primary fw-bold text-center">
+                <i class="fas fa-cog me-3"></i> Teacher Settings
+            </h1>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-action="Setting" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4 alert alert-danger" role="alert"></div>
+
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-4 p-md-5">
+
+                        <h2 class="mb-4 text-primary fw-semibold border-bottom pb-2">
+                            <i class="fas fa-user me-2"></i> Profile Information
+                        </h2>
+
+                        <div class="row g-4 mb-4 align-items-start">
+                            <!-- Profile Picture Section - Improved Design -->
+                            <div class="col-md-4">
+                                <div class="profile-section bg-light rounded-4 p-4 h-100">
+                                    <div class="text-center">
+                                        <!-- Profile Image Container -->
+                                        <div class="profile-image-container position-relative mx-auto mb-3">
+                                            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                                            {
+                                                <img id="ProfilePreview" src="@Model.ProfilePicture" alt="Profile Picture"
+                                                     class="profile-image" />
+                                            }
+                                            else
+                                            {
+                                                <div id="ProfilePlaceholder" class="profile-placeholder">
+                                                    <i class="fas fa-user fa-3x text-light"></i>
+                                                </div>
+                                            }
+
+                                            <!-- Camera Overlay -->
+                                            <div class="camera-overlay">
+                                                <label for="ProfilePictureFile" class="camera-btn">
+                                                    <i class="fas fa-camera"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Upload Controls -->
+                                        <div class="upload-controls">
+                                            <label for="ProfilePictureFile" class="btn btn-primary btn-sm rounded-pill px-3 mb-2 w-100">
+                                                <i class="fas fa-upload me-2"></i>Upload Photo
+                                            </label>
+                                            <input type="file" id="ProfilePictureFile" name="ProfilePictureFile"
+                                                   class="d-none" accept="image/*"
+                                                   onchange="previewProfilePicture(this)" />
+
+                                            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                                            {
+                                                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3 w-100"
+                                                        onclick="removeProfilePicture()">
+                                                    <i class="fas fa-trash me-1"></i>Remove
+                                                </button>
+                                            }
+                                        </div>
+
+                                        <!-- Upload Guidelines -->
+                                        <div class="upload-info mt-3 p-2 bg-white rounded-3 border">
+                                            <small class="text-muted d-block">
+                                                <i class="fas fa-info-circle me-1 text-primary"></i>
+                                                <strong>Supported formats:</strong> JPG, PNG, WebP
+                                            </small>
+                                            <small class="text-muted d-block mt-1">
+                                                <i class="fas fa-weight me-1 text-primary"></i>
+                                                <strong>Max size:</strong> 5MB
+                                            </small>
+                                            <small class="text-muted d-block mt-1">
+                                                <i class="fas fa-ruler me-1 text-primary"></i>
+                                                <strong>Recommended:</strong> 400×400px
+                                            </small>
+                                        </div>
+                                        <!-- Hidden input عشان الصورة القديمة -->
+                                        <input type="hidden" asp-for="ProfilePicture" />
+
+                                        <!-- File input عشان الصورة الجديدة -->
+                                        <input type="file" id="ProfilePictureFile" name="ProfilePictureFile"
+                                               class="d-none" accept="image/*" onchange="previewProfilePicture(this)" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Info Section -->
+                            <div class="col-md-8">
+                                <div class="basic-info-section">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label asp-for="FullName" class="form-label fw-semibold text-dark mb-2">
+                                                    <i class="fas fa-user-tag me-2 text-primary"></i>Full Name
+                                                </label>
+                                                <input asp-for="FullName" class="form-control form-control-lg" placeholder="Enter your full name" />
+                                                <span asp-validation-for="FullName" class="text-danger small mt-1 d-block"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Email" class="form-label fw-semibold text-dark mb-2">
+                                                    <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                                                </label>
+                                                <input asp-for="Email" class="form-control form-control-lg" placeholder="your.email@example.com" />
+                                                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="PhoneNumber" class="form-label fw-semibold text-dark mb-2">
+                                                    <i class="fas fa-phone me-2 text-primary"></i>Phone Number
+                                                </label>
+                                                <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="+20 123 456 7890" />
+                                                <span asp-validation-for="PhoneNumber" class="text-danger small mt-1 d-block"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rest of the form -->
+                        <hr class="my-5" />
+
+                        <h2 class="mb-4 text-info fw-semibold border-bottom pb-2">
+                            <i class="fas fa-graduation-cap me-2"></i> Professional Details
+                        </h2>
+
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="Bio" class="form-label fw-semibold text-dark mb-2">
+                                        <i class="fas fa-file-alt me-2 text-info"></i>Professional Bio
+                                    </label>
+                                    <textarea asp-for="Bio" class="form-control" placeholder="Share your background, experience, and teaching philosophy..."
+                                              rows="4"></textarea>
+                                    <span asp-validation-for="Bio" class="text-danger small"></span>
+                                    <small class="form-text text-muted">This helps students learn more about you and your teaching style.</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Qualifications" class="form-label fw-semibold text-dark mb-2">
+                                        <i class="fas fa-award me-2 text-info"></i>Qualifications
+                                    </label>
+                                    <textarea asp-for="Qualifications" class="form-control" placeholder="List your degrees, certifications, and awards..."
+                                              rows="3"></textarea>
+                                    <span asp-validation-for="Qualifications" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Expertise" class="form-label fw-semibold text-dark mb-2">
+                                        <i class="fas fa-star me-2 text-info"></i>Areas of Expertise
+                                    </label>
+                                    <textarea asp-for="Expertise" class="form-control" placeholder="Mention subjects, technologies, and skills you specialize in..."
+                                              rows="3"></textarea>
+                                    <span asp-validation-for="Expertise" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- end card-body -->
+                </div> <!-- end card -->
+
+                <div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+                    <a asp-action="Dashboard" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg px-5 shadow-lg rounded-pill">
+                        <i class="fas fa-check-circle me-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .border-bottom {
+            border-color: #0d6efd !important;
+        }
+
+        /* Profile Section Styles */
+        .profile-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%) !important;
+            border: 1px solid #e3e9ff;
+            height: fit-content;
+        }
+
+        .profile-image-container {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border: 4px solid #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .profile-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .profile-image-container:hover .camera-overlay {
+            opacity: 1;
+        }
+
+        .camera-btn {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+            .camera-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+        .upload-controls {
+            margin: 1.5rem 0;
+        }
+
+        .upload-info {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid #e3e9ff !important;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-control-lg {
+            border: 1px solid #e3e9ff;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .profile-image-container {
+                width: 150px;
+                height: 150px;
+            }
+
+            .profile-section {
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Animation */
+        .profile-section {
+            animation: slideInLeft 0.6s ease;
+        }
+
+        .basic-info-section {
+            animation: slideInRight 0.6s ease;
+        }
+
+        @@keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @@keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Preview profile picture
+        function previewProfilePicture(input) {
+            const preview = document.getElementById('ProfilePreview');
+            const placeholder = document.getElementById('ProfilePlaceholder');
+
+            if (input.files && input.files[0]) {
+                // Check file size (5MB limit)
+                if (input.files[0].size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    input.value = '';
+                    return;
+                }
+
+                // Check file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!validTypes.includes(input.files[0].type)) {
+                    alert('Please select a valid image file (JPG, PNG, WebP)');
+                    input.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    if (!preview) {
+                        // Create preview element if it doesn't exist
+                        const newPreview = document.createElement('img');
+                        newPreview.id = 'ProfilePreview';
+                        newPreview.className = 'profile-image';
+                        newPreview.alt = 'Profile Picture';
+                        newPreview.src = e.target.result;
+
+                        if (placeholder) {
+                            placeholder.parentNode.replaceChild(newPreview, placeholder);
+                        }
+                    } else {
+                        preview.src = e.target.result;
+                    }
+
+                    // Show remove button
+                    const removeBtn = document.querySelector('.btn-outline-danger');
+                    if (removeBtn) {
+                        removeBtn.style.display = 'block';
+                    }
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Remove profile picture
+        function removeProfilePicture() {
+            const preview = document.getElementById('ProfilePreview');
+            const placeholder = document.getElementById('ProfilePlaceholder');
+            const fileInput = document.getElementById('ProfilePictureFile');
+
+            if (preview) {
+                // Create placeholder
+                const newPlaceholder = document.createElement('div');
+                newPlaceholder.id = 'ProfilePlaceholder';
+                newPlaceholder.className = 'profile-placeholder';
+                newPlaceholder.innerHTML = '<i class="fas fa-user fa-3x text-light"></i>';
+
+                preview.parentNode.replaceChild(newPlaceholder, preview);
+            }
+
+            // Reset file input
+            if (fileInput) {
+                fileInput.value = '';
+            }
+
+            // Hide remove button
+            const removeBtn = document.querySelector('.btn-outline-danger');
+            if (removeBtn) {
+                removeBtn.style.display = 'none';
+            }
+        }
+
+        // Auto-resize textareas
+        document.addEventListener('DOMContentLoaded', function() {
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+
+                // Trigger initial resize
+                setTimeout(() => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = (textarea.scrollHeight) + 'px';
+                }, 100);
+            });
+        });
+    </script>
+}

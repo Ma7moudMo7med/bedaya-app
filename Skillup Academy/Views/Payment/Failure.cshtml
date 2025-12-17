@@ -1,0 +1,115 @@
+﻿@model Guid
+@{
+    ViewData["Title"] = "Payment Failed";
+}
+
+<style>
+    .xmark-container {
+        width: 140px;
+        height: 120px;
+        position: relative;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        background-color: var(--bs-danger-bg-subtle);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+
+    .xmark-svg {
+        width: 90px;
+        height: 70px;
+        stroke-width: 5;
+        stroke: var(--bs-danger);
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        display: block;
+        stroke-dasharray: 120;
+        stroke-dashoffset: 120;
+        animation: drawXmark 2s forwards ease-in-out;
+    }
+
+    @@keyframes drawXmark {
+        to
+
+    {
+        stroke-dashoffset: 0;
+    }
+
+    }
+
+    .card.animated {
+        animation: pulseEffect 0.8s ease-out;
+    }
+
+    @@keyframes pulseEffect {
+        0%
+
+    {
+        transform: scale(0.98);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center py-5" style="min-height: 85vh;">
+    <div class="card shadow-lg border-0 rounded-4 p-5 animated" style="max-width: 480px; width: 100%;">
+        <div class="card-body text-center">
+
+            <div class="xmark-container">
+                <svg class="xmark-svg" viewBox="0 0 24 24">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </div>
+
+            <h1 class="fw-bolder text-danger mb-2 display-5">Payment Failed!</h1>
+            <p class="text-secondary fs-5 mb-4">Sorry, there was an issue processing your payment.</p>
+
+            <hr class="my-4 border-secondary border-opacity-25">
+
+            <p class="text-muted small">
+                Please check your card details or try again later.
+            </p>
+
+            <p class="text-muted small mt-2">
+                You will be redirected back to Checkout in <span id="countdown" class="fw-bold text-danger">10</span> seconds...
+            </p>
+
+            <a class="btn btn-danger btn-lg mt-3 px-5 shadow-sm lift" asp-controller="Payment" asp-action="Checkout" asp-route-planId="@Model">
+                <i class="bi bi-arrow-clockwise me-2"></i> Try Again Now
+            </a>
+
+            <a class="btn btn-success btn-lg mt-3 px-5 shadow-sm lift" href="/">
+                <i class="bi bi-house-door-fill me-2"></i> Go to Homepage Now
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let time = 10;
+        const countdownElement = document.getElementById('countdown');
+        const checkoutUrl = '@Url.Action("Checkout", "Payment", new { planId = Model })';
+
+        function updateCountdown() {
+            if (time > 0) {
+                time--;
+                countdownElement.textContent = time;
+            } else {
+                clearInterval(timer);
+                window.location.href = checkoutUrl;
+            }
+        }
+
+        const timer = setInterval(updateCountdown, 1000);
+    </script>
+}

@@ -1,0 +1,159 @@
+﻿<style>
+    /* General Layout Improvements */
+    body {
+        background: #f5f7fa;
+    }
+
+    .sub-card {
+        border-radius: 20px;
+        overflow: hidden;
+        border: none;
+    }
+
+    .sub-header {
+        background: linear-gradient(90deg, #4e73df, #1cc88a);
+        color: #fff;
+        padding: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .sub-header h2 {
+            font-weight: bold;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+    .status-badge {
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-active {
+        background: #d1f7df;
+        color: #0f9d58;
+    }
+
+    .status-inactive {
+        background: #f9d0d0;
+        color: #d93025;
+    }
+
+    .section-title {
+        font-weight: bold;
+        border-left: 5px solid #4e73df;
+        padding-left: 10px;
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
+
+    .info-block {
+        background: #ffffff;
+        padding: 20px 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 35px;
+    }
+
+    .info-grid dt {
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 10px;
+    }
+
+    .info-grid dd {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        color: #2b2b2b;
+    }
+
+    .price-highlight {
+        font-size: 1.8rem !important;
+        font-weight: bold;
+        color: #1cc88a;
+    }
+
+    .footer-btns a {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 10px 20px !important;
+    }
+</style>
+
+@model Subscription
+@{
+    ViewData["Title"] = "Subscription Details";
+    var statusClass = Model.IsActive ? "status-active" : "status-inactive";
+    var statusIcon = Model.IsActive ? "fas fa-check-circle" : "fas fa-times-circle";
+    var statusText = Model.IsActive ? "Active" : "Inactive";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="card sub-card shadow-lg">
+
+                <!-- HEADER -->
+                <div class="sub-header">
+                    <h2><i class="fas fa-file-invoice"></i> Subscription: @Model.Name</h2>
+                    <span class="status-badge @statusClass">
+                        <i class="@statusIcon"></i> @statusText
+                    </span>
+                </div>
+
+                <div class="card-body p-5">
+
+                    <!-- Basic Info -->
+                    <h4 class="section-title"><i class="fas fa-info-circle"></i> Basic Information</h4>
+                    <div class="info-block">
+                        <dl class="row info-grid">
+                            <dt class="col-md-3">@Html.DisplayNameFor(model => model.Name)</dt>
+                            <dd class="col-md-9">@Html.DisplayFor(model => model.Name)</dd>
+
+                            <dt class="col-md-3">@Html.DisplayNameFor(model => model.Type)</dt>
+                            <dd class="col-md-9">@Html.DisplayFor(model => model.Type)</dd>
+
+                            <dt class="col-md-3">@Html.DisplayNameFor(model => model.Description)</dt>
+                            <dd class="col-md-9">@Html.DisplayFor(model => model.Description)</dd>
+                        </dl>
+                    </div>
+
+                    <!-- Pricing -->
+                    <h4 class="section-title"><i class="fas fa-money-bill-wave"></i> Pricing & Limits</h4>
+                    <div class="info-block">
+                        <dl class="row info-grid">
+                            <dt class="col-md-3">Price</dt>
+                            <dd class="col-md-9 price-highlight">$@Html.DisplayFor(model => model.Price)</dd>
+
+                            <dt class="col-md-3">Duration</dt>
+                            <dd class="col-md-9">@Html.DisplayFor(model => model.DurationDays) days</dd>
+
+                            <dt class="col-md-3">Max Courses</dt>
+                            <dd class="col-md-9">@Html.DisplayFor(model => model.MaxCourses) courses</dd>
+                        </dl>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="card-footer bg-light py-3 border-top footer-btns d-flex justify-content-end gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning text-dark">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a asp-action="ShowAll" class="btn btn-outline-secondary">
+                        <i class="fas fa-list"></i> Back to List
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,137 @@
+﻿@model List<Subscription>
+@using Core.Enums
+
+@{
+    ViewData["Title"] = "Choose Your Plan";
+}
+
+<style>
+    body {
+        background: #f4f7fb;
+    }
+
+    .plan-card {
+        border-radius: 20px;
+        transition: .25s ease;
+        border: none;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .plan-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+        }
+
+    .plan-header {
+        padding: 35px 20px;
+        text-align: center;
+        color: #fff;
+    }
+
+    .plan-price {
+        font-size: 2.3rem;
+        font-weight: 700;
+    }
+
+    .plan-desc {
+        min-height: 65px;
+        font-size: .95rem;
+        color: #6c757d;
+    }
+
+    .feature-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        font-size: .95rem;
+    }
+
+    .btn-subscribe {
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    .badge-status {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: .8rem;
+        font-weight: 600;
+    }
+
+    .popular-tag {
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ffbf00;
+        color: #000;
+        padding: 5px 20px;
+        border-radius: 0 0 8px 8px;
+        font-weight: 700;
+    }
+</style>
+
+<div class="container py-3">
+    <div class="text-center mb-3">
+        <h1 class="fw-bold">Choose Your Subscription Plan</h1>
+        <p class="text-muted">Unlock premium content and take your learning to the next level</p>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var s in Model)
+        {
+            var gradient = s.Type switch
+            {
+                SubscriptionType.Monthly => "linear-gradient(135deg,#4e73df,#1cc88a)",
+                SubscriptionType.Quarterly => "linear-gradient(135deg,#7b4397,#dc2430)",
+                SubscriptionType.Yearly => "linear-gradient(135deg,#11998e,#38ef7d)",
+                SubscriptionType.Lifetime => "linear-gradient(135deg,#ff512f,#dd2476)",
+                _ => "linear-gradient(135deg,#6a11cb,#2575fc)"
+            };
+            <div class="col-lg-4 col-md-6">
+                <div class="card plan-card shadow-sm">
+
+                    @if (s.Type == SubscriptionType.Yearly)
+                    {
+                        <div class="popular-tag">Most Popular</div>
+                    }
+
+                <div class="plan-header" style="background:@gradient">
+                    <h3 class="fw-bold">@s.Name</h3>
+                    <div class="plan-price">$@s.Price</div>
+                    <div>For @s.DurationDays days</div>
+                </div>
+
+                <span class="badge-status @(s.IsActive ? "bg-success" : "bg-danger")">@((s.IsActive ? "Active" : "Inactive"))</span>
+
+                <div class="card-body p-4">
+
+                    <p class="plan-desc">
+                        @(
+                            string.IsNullOrEmpty(s.Description) ? "No description available." :
+                            (s.Description.Length > 120 ? s.Description.Substring(0, 120) + "..." : s.Description)
+                          )
+                    </p>
+
+                        <div class="feature-item"><i class="fas fa-book"></i> Max Courses: <strong>@s.MaxCourses</strong></div>
+                        <div class="feature-item"><i class="fas fa-clock"></i> Duration: <strong>@s.DurationDays days</strong></div>
+                        <div class="feature-item"><i class="fas fa-tag"></i> Type: <strong>@s.Type</strong></div>
+
+                        <div class="d-grid mt-4">
+                            <a asp-controller="Payment" asp-action="Checkout" asp-route-planId="@s.Id" class="btn btn-warning btn-subscribe">
+                                <i class="fas fa-bolt"></i> Subscribe Now
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+                }
+    </div>
+</div>

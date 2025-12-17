@@ -1,0 +1,102 @@
+﻿@model SubscriptionPlan
+
+@{
+    ViewData["Title"] = "Delete Subscription Plan";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-danger mb-4">Confirm Deletion</h1>
+
+            <div class="alert alert-danger shadow-sm p-4" role="alert">
+                <h3>Are you sure you want to delete this subscription plan?</h3>
+                <p class="lead mt-3">This action cannot be undone. All plan data and access records will be permanently removed from the system.</p>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Subscription Plan Summary</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">User</dt>
+                        <dd class="col-sm-9">@Model.User?.UserName</dd>
+
+                        <dt class="col-sm-3">Subscription</dt>
+                        <dd class="col-sm-9">@Model.Subscription?.Name</dd>
+
+                        <dt class="col-sm-3">Course</dt>
+                        <dd class="col-sm-9">@Model.Course?.Title</dd>
+
+                        <dt class="col-sm-3">Plan Duration</dt>
+                        <dd class="col-sm-9">
+                            @Model.StartDate.ToString("dd MMM yyyy") - @Model.EndDate.ToString("dd MMM yyyy")
+                        </dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.PaidAmount)</dt>
+                        <dd class="col-sm-9">$@Html.DisplayFor(model => model.PaidAmount)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.TransactionId)</dt>
+                        <dd class="col-sm-9">
+                            @if (!string.IsNullOrEmpty(Model.TransactionId))
+                            {
+                                <code>@Model.TransactionId</code>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No transaction ID</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IsActive)</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary")">
+                                @(Model.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Plan Status</dt>
+                        <dd class="col-sm-9">
+                            @{
+                                var today = DateTime.Today;
+                                var status = "";
+                                var badgeClass = "";
+
+                                if (Model.EndDate < today)
+                                {
+                                    status = "Expired";
+                                    badgeClass = "bg-secondary";
+                                }
+                                else if (Model.StartDate > today)
+                                {
+                                    status = "Upcoming";
+                                    badgeClass = "bg-info";
+                                }
+                                else
+                                {
+                                    status = "Current";
+                                    badgeClass = "bg-success";
+                                }
+                            }
+                            <span class="badge @badgeClass">@status</span>
+                        </dd>
+
+                        <dt class="col-sm-3">Plan ID</dt>
+                        <dd class="col-sm-9">@Model.Id</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <hr class="mt-4" />
+
+            <form asp-action="SaveDelete" method="post" class="text-center">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger btn-lg px-5 me-3">
+                    <i class="bi bi-trash"></i> Delete Permanently
+                </button>
+                <a asp-action="ShowAll" class="btn btn-secondary btn-lg">Cancel & Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+﻿
+@model CourseReviewViewModel
+
+@{
+    ViewData["Title"] = "Create Course Review";
+}
+
+<h1>Create Course Review</h1>
+<hr />
+@{
+    var generalErrors = ViewContext.ModelState
+                                    .Where(x => x.Key == string.Empty)
+                                    .SelectMany(x => x.Value.Errors)
+                                    .ToList();
+}
+
+@if (generalErrors.Any())
+{
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Create Review Failed!</h4>
+        <ul>
+            @foreach (var error in generalErrors)
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <form asp-controller="CourseReviews" asp-action="Create" method="post">
+
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <input type="hidden" asp-for="CourseId" />
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Review Details</h5>
+                </div>
+                <div class="card-body">
+                    @* <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Rating" class="form-label"></label>
+                                <input asp-for="Rating" class="form-control" />
+                                <span asp-validation-for="Rating" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ReviewDate" class="form-label"></label>
+                                <input asp-for="ReviewDate" class="form-control" />
+                                <span asp-validation-for="ReviewDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div> *@
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Comment" class="form-label"></label>
+                        <textarea asp-for="Comment" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Rating Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ContentRating" class="form-label"></label>
+                                <input asp-for="ContentRating" class="form-control" />
+                                <span asp-validation-for="ContentRating" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="TeachingRating" class="form-label"></label>
+                                <input asp-for="TeachingRating" class="form-control" />
+                                <span asp-validation-for="TeachingRating" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @* @if (User.IsInRole("Admin"))
+            {
+            <div class="card shadow mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Status</h5>
+                </div>
+                <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <div class="form-group form-check mb-3">
+                                    <input class="form-check-input" asp-for="IsApproved" />
+                                    <label class="form-check-label" asp-for="IsApproved">
+                                        @Html.DisplayNameFor(model => model.IsApproved)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                
+                </div>
+            </div>
+            } *@
+            <div class="form-group pt-3 text-center">
+                <input type="submit" value="Create Review" class="btn btn-primary btn-lg px-5" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

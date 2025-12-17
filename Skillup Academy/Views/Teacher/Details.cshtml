@@ -1,0 +1,60 @@
+﻿@model TeacherViewModel
+
+@{
+    ViewData["Title"] = "Teacher Details";
+}
+
+<h1 class="mb-4 text-primary">Teacher: @Model.FullName</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.FullName)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.FullName)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.PhoneNumber)</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.PhoneNumber)</dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.IsActive)</dt>
+            <dd class="col-sm-8">
+                @if (Model.IsActive)
+                {
+                    <span class="badge bg-success">Active</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Disabled</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RegistrationDate)</dt>
+            <dd class="col-sm-8">
+                @(Model.RegistrationDate.HasValue? Model.RegistrationDate.Value.ToString("yyyy-MM-dd") : "N/A")
+            </dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.LastLoginDate)</dt>
+            <dd class="col-sm-8">
+                @(Model.LastLoginDate.HasValue? Model.LastLoginDate.Value.ToString("yyyy-MM-dd HH:mm") : "Never Logged In")
+            </dd>
+
+            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.TotalCourses)</dt>
+            <dd class="col-sm-8">@(Model.TotalCourses ?? 0)</dd>
+
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
+    <a asp-action="Index" class="btn btn-outline-secondary">Back To List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

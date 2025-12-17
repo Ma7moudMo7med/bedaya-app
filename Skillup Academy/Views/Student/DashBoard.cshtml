@@ -1,0 +1,99 @@
+﻿@using Skillup_Academy.ViewModels.StudentsViewModels
+@model StudentDashboardViewModel
+
+@{
+    Layout = "_StudentLayout";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">👋 Welcome, @Model.StudentName</h2>
+
+    <!-- Stats Cards -->
+    <div class="row text-center">
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6 class="text-muted">Enrolled Courses</h6>
+                <h3 class="text-primary">@Model.TotalCourses</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6 class="text-muted">Completed</h6>
+                <h3 class="text-success">@Model.CompletedCourses</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6 class="text-muted">Overall Progress</h6>
+                <h3 class="text-info">@Model.OverallProgress %</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-3">
+                <h6 class="text-muted">Certificates</h6>
+                <h3 class="text-warning">@Model.CertificatesEarned</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Recommended Courses or Continue Learning -->
+    <div class="card shadow-sm border-0 p-4 mt-4">
+        <h5 class="text-primary mb-3">📚 Continue Learning</h5>
+
+        @if (Model.Courses == null || !Model.Courses.Any())
+        {
+            <p class="text-muted">You have no active courses yet.</p>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var course in Model.Courses.Take(3))
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-primary">@course.Title</h6>
+                                <p class="text-muted">@course.Description</p>
+
+                                <div class="mb-2">
+                                    <small>Progress: @course.Progress %</small>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-info" style="width:@course.Progress%"></div>
+                                    </div>
+                                </div>
+
+                                <a href="@Url.Action("Details", "Course", new { id = course.CourseId })"
+                                   class="btn btn-outline-primary btn-sm w-100">
+                                    Continue Course
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+
+    <!-- Quick Actions -->
+    @* <div class="card shadow-sm border-0 p-4 mt-4">
+        <h5 class="text-primary mb-3">⚡ Quick Actions</h5>
+        <ul class="list-unstyled">
+            <li><a href="@Url.Action("MyCourse", "Student")" class="text-decoration-none">👉 View My Courses</a></li>
+            <li><a href="@Url.Action("MySubscription", "Student")" class="text-decoration-none">👉 My Subscription</a></li>
+            <li><a href="@Url.Action("AllCourses", "Course")" class="text-decoration-none">👉 Browse Courses</a></li>
+            <li><a href="/Account/Logout" class="text-danger text-decoration-none">🚪 Logout</a></li>
+        </ul>
+    </div> *@
+
+</div>
+
+@section Scripts {
+}

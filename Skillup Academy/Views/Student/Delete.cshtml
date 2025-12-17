@@ -1,0 +1,67 @@
+﻿@model StudentViewModel 
+
+@{
+    ViewData["Title"] = "Confirm Student Deletion";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-danger mb-4"><i class="fas fa-exclamation-triangle"></i> Confirm Student Deletion</h1>
+
+            <div class="alert alert-danger shadow-sm p-4" role="alert">
+                <h3>Are you sure you want to delete this student?</h3>
+                <p class="lead mt-3">
+                    This action **cannot be undone**. The user account and all associated student data (enrollments, progress, etc.) will be permanently removed from the system.
+                </p>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Student Summary - @Model.FullName</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.FullName)</dt>
+                        <dd class="col-sm-8"><strong>@Model.FullName</strong></dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RegistrationDate)</dt>
+                        @* <dd class="col-sm-8">@Model.RegistrationDate.ToString("yyyy-MM-dd")</dd> *@
+                        <dd class="col-sm-8">
+                            @if (Model.RegistrationDate.HasValue) // 🔥 التحقق من وجود قيمة
+                            {
+                                @Model.RegistrationDate.Value.ToString("yyyy-MM-dd")
+                                // 🔥 استخدام .Value للوصول للقيمة الفعلية
+                            }
+                            else
+                            {
+                                @:N/A
+                            }
+                        </dd>
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.IsActive)</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                                @(Model.IsActive ? "Active" : "Disabled")
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <hr class="mt-4" />
+
+            <form asp-action="Delete" method="post" class="text-center">
+                <input type="hidden" name="id" value="@Model.Id" /> 
+                
+                <button type="submit" class="btn btn-danger btn-lg px-5 me-3">
+                    <i class="fas fa-trash"></i> Delete Permanently
+                </button>
+                <a asp-action="GetAllStudents" class="btn btn-secondary btn-lg">Cancel & Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

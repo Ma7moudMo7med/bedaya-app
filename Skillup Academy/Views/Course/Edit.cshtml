@@ -1,0 +1,306 @@
+﻿@model Skillup_Academy.ViewModels.CoursesViewModels.EditCourseViewModel
+
+@{
+    ViewData["Title"] = "Edit Course: " + Model.Title;
+	Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+    var baseMediaPath = "/img/";
+    var currentThumbnailPath = string.IsNullOrEmpty(Model.ThumbnailUrl) ? "N/A" : baseMediaPath + Model.ThumbnailUrl;
+    var currentVideoPath = string.IsNullOrEmpty(Model.PreviewVideoUrl) ? "N/A" : baseMediaPath + Model.PreviewVideoUrl;
+
+    string newThumbInputId = "NewThumbnailInput";
+    string thumbPreviewId = "ThumbPreviewNew";
+    string newVideoInputId = "NewVideoInput";
+    string videoPreviewId = "VideoPreviewNew";
+}
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-12 col-md-10 col-lg-9">
+
+			<h1 class="display-5 mb-4 text-dark">Edit Course: <span class="text-primary">@Model.Title</span></h1>
+
+			<form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+				<div asp-validation-summary="ModelOnly" class="text-danger mb-4 alert alert-danger" role="alert"></div>
+
+				<input type="hidden" asp-for="Id" />
+				<input type="hidden" asp-for="ThumbnailUrl" />
+				<input type="hidden" asp-for="PreviewVideoUrl" />
+
+				<div class="card shadow-lg border-0 rounded-3">
+
+					<div class="card-body p-4 p-md-5">
+
+
+						<h2 class="mb-4 text-primary fw-semibold border-bottom pb-2">
+							<i class="bi bi-1-circle-fill me-2"></i> 1. Basic Details
+						</h2>
+
+						<div class="row g-4 mb-4">
+							<div class="col-md-7">
+								<div class="form-floating">
+									<input asp-for="Title" class="form-control form-control-lg" placeholder="Full Course Title" />
+									<label asp-for="Title">Course Title</label>
+									<span asp-validation-for="Title" class="text-danger small mt-1 d-block"></span>
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-floating">
+									<input asp-for="ShortDescription" class="form-control form-control-lg" placeholder="A catchy short description" />
+									<label asp-for="ShortDescription">Short Description</label>
+									<span asp-validation-for="ShortDescription" class="text-danger small mt-1 d-block"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-floating mb-5">
+							<textarea asp-for="Description" class="form-control" placeholder="Write a detailed course description" style="height: 200px;"></textarea>
+							<label asp-for="Description">Detailed Description</label>
+							<span asp-validation-for="Description" class="text-danger small"></span>
+							<small class="form-text text-muted">A thorough description helps students decide if this course is right for them.</small>
+						</div>
+
+						<hr class="my-5" />
+
+
+						<h2 class="mb-4 text-info fw-semibold border-bottom pb-2">
+							<i class="bi bi-2-circle-fill me-2"></i> 2. Media Assets and Metrics
+						</h2>
+
+						<div class="row g-4 mb-5">
+
+
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label class="form-label fw-bold d-block text-dark">
+										<i class="fas fa-image me-2"></i> Course Thumbnail Image
+									</label>
+
+
+									<div id="current-thumb-display" class="mb-3 p-2 border rounded text-center bg-white" style="min-height: 180px;">
+										<h6 class="text-muted small border-bottom pb-1 mb-2">Currently Saved File</h6>
+										@if (currentThumbnailPath != "N/A")
+										{
+											<img src="@currentThumbnailPath" alt="Current Thumbnail" class="img-fluid rounded mb-2" style="max-height: 300px; object-fit: cover;">
+											<p class="text-muted small mb-0">Saved: **@Model.ThumbnailUrl**</p>
+										}
+										else
+										{
+											<p class="text-muted small mt-2 mb-0 py-3">No Current Image Set.</p>
+										}
+										<a href="javascript:void(0)" onclick="toggleMediaInput('thumb', '@newThumbInputId', 'current-thumb-display')" class="btn btn-sm btn-outline-primary mt-2">
+											Change Image
+										</a>
+									</div>
+
+
+									<div id="thumb-new-input-container" class="mt-3 p-3 border rounded shadow-sm bg-white" style="display: none;">
+										<h6 class="text-info fw-bold">Upload New Thumbnail</h6>
+										<input type="file" asp-for="ThumbnailUrlFile" id="@newThumbInputId" class="form-control" accept="image/*" onchange="previewFile('@newThumbInputId', '@thumbPreviewId', 'image')" />
+										<span asp-validation-for="ThumbnailUrlFile" class="text-danger small"></span>
+
+										<div class="mt-2 p-2 border rounded text-center bg-light">
+											<img id="@thumbPreviewId" src="#" alt="New Image Preview" class="img-fluid rounded" style="display: none; max-height: 200px; object-fit: cover; width: 100%;" />
+											<p id="@(thumbPreviewId + "Placeholder")" class="text-muted mb-0 py-1"><i class="fas fa-image fs-4"></i> New Preview</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="col-md-6">
+								<div class="p-4 border rounded-3 shadow-sm bg-light h-100">
+									<label class="form-label fw-bold d-block text-dark">
+										<i class="fas fa-video me-2"></i> Course Preview Video
+									</label>
+
+
+									<div id="current-video-display" class="mb-3 p-2 border rounded text-center bg-white" style="min-height: 180px;">
+										<h6 class="text-muted small border-bottom pb-1 mb-2">Currently Saved Video</h6>
+										@if (currentVideoPath != "N/A")
+										{
+											<video controls class="img-fluid rounded mb-2" style="max-height: 300px; object-fit: cover; width: 100%;">
+												<source src="@currentVideoPath" type="video/mp4">
+												Your browser does not support the video tag.
+											</video>
+											<p class="text-muted small mb-0">Saved: **@Model.PreviewVideoUrl**</p>
+										}
+										else
+										{
+											<p class="text-muted small mt-2 mb-0 py-3">No Current Video Set.</p>
+										}
+										<a href="javascript:void(0)" onclick="toggleMediaInput('video', '@newVideoInputId', 'current-video-display')" class="btn btn-sm btn-outline-primary mt-2">
+											Change Video
+										</a>
+									</div>
+
+
+									<div id="video-new-input-container" class="mt-3 p-3 border rounded shadow-sm bg-white" style="display: none;">
+										<h6 class="text-info fw-bold">Upload New Video</h6>
+										<input type="file" asp-for="PreviewVideoFile" id="@newVideoInputId" class="form-control" accept="video/*" onchange="previewFile('@newVideoInputId', '@videoPreviewId', 'video')" />
+										<span asp-validation-for="PreviewVideoFile" class="text-danger small"></span>
+
+										<div class="mt-2 p-2 border rounded text-center bg-light">
+											<video id="@videoPreviewId" controls class="img-fluid rounded" style="display: none; max-height: 200px; object-fit: cover; width: 100%;">
+												Your browser does not support the video tag.
+											</video>
+											<p id="@(videoPreviewId + "Placeholder")" class="text-muted mb-0 py-1"><i class="fas fa-video fs-4"></i> New Preview</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<h5 class="mb-3 text-info fw-bold">Course Metrics & Status</h5>
+						<div class="row bg-white p-4 rounded-3 border shadow-sm">
+							<div class="col-md-4">
+								<div class="form-floating mb-3">
+									<input asp-for="TotalDuration" readonly class="form-control" placeholder="Total Duration" />
+									<label asp-for="TotalDuration">Duration (Minutes)</label>
+									<span asp-validation-for="TotalDuration" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-floating mb-3">
+									<input asp-for="TotalLessons" readonly class="form-control" placeholder="Total Lessons" />
+									<label asp-for="TotalLessons">Total Lessons</label>
+									<span asp-validation-for="TotalLessons" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-4 d-flex align-items-center pt-2 justify-content-around">
+								<div class="form-check form-switch me-3">
+									<input class="form-check-input" type="checkbox" role="switch" asp-for="IsFree" />
+									<label class="form-check-label fw-bold" asp-for="IsFree">Is Free</label>
+								</div>
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" role="switch" asp-for="IsPublished" />
+									<label class="form-check-label fw-bold" asp-for="IsPublished">Is Published</label>
+								</div>
+							</div>
+						</div>
+
+						<hr class="my-5" />
+
+
+						<h2 class="mb-4 text-secondary fw-semibold border-bottom pb-2">
+							<i class="bi bi-3-circle-fill me-2"></i> 3. Categorization & System Dates
+						</h2>
+
+						<h5 class="mb-3 text-secondary fw-bold">Organization</h5>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-floating mb-3">
+									<select asp-for="CategoryId" class="form-select form-control-lg" asp-items="ViewBag.Category" placeholder="Category">
+										<option value="">-- Select Category --</option>
+									</select>
+									<label asp-for="CategoryId">Category</label>
+									<span asp-validation-for="CategoryId" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-floating mb-3">
+									<select asp-for="SubCategoryId" class="form-select form-control-lg" asp-items="ViewBag.SubCategory" placeholder="SubCategory">
+										<option value="">-- Select SubCategory --</option>
+									</select>
+									<label asp-for="SubCategoryId">SubCategory</label>
+									<span asp-validation-for="SubCategoryId" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+
+						<hr class="my-4">
+
+						<h5 class="mb-3 text-dark fw-bold">System Dates (Read Only)</h5>
+						<div class="row bg-light p-3 rounded-3 shadow-sm">
+							<div class="col-md-4">
+								<label asp-for="CreatedDate" class="form-label small text-muted">Created Date</label>
+								<input type="text" value="@Model.CreatedDate.ToShortDateString()" class="form-control-plaintext fw-bold" readonly />
+							</div>
+							<div class="col-md-4">
+								<label asp-for="UpdatedDate" class="form-label small text-muted">Last Updated</label>
+								<input type="text" value="@(Model.UpdatedDate.HasValue? Model.UpdatedDate.Value.ToShortDateString() : "N/A")" class="form-control-plaintext fw-bold" readonly />
+							</div>
+							<div class="col-md-4">
+								<label asp-for="PublishedDate" class="form-label small text-muted">Published Date</label>
+								<input type="text" value="@(Model.PublishedDate.HasValue? Model.PublishedDate.Value.ToShortDateString() : "N/A")" class="form-control-plaintext fw-bold" readonly />
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+					<a asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+						<i class="fas fa-list me-2"></i> Back to List
+					</a>
+					<button type="submit" value="Save Changes" class="btn btn-success btn-lg px-5 shadow-lg rounded-pill">
+						<i class="fas fa-save me-2"></i> Save Changes
+					</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function toggleMediaInput(type, inputId, currentDisplayId) {
+            const inputContainer = document.getElementById(type + '-new-input-container');
+            const currentDisplay = document.getElementById(currentDisplayId);
+            const changeButton = currentDisplay.querySelector('a');
+
+            if (inputContainer.style.display === 'none') {
+                inputContainer.style.display = 'block';
+                currentDisplay.style.display = 'none';
+                document.getElementById(inputId).focus();
+            } else {
+                inputContainer.style.display = 'none';
+                currentDisplay.style.display = 'block';
+            }
+        }
+
+        function previewFile(inputId, previewId, fileType) {
+            const input = document.getElementById(inputId);
+            const previewElement = document.getElementById(previewId);
+            const placeholder = document.getElementById(previewId + "Placeholder");
+
+            previewElement.style.display = 'none';
+            placeholder.style.display = 'block';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    if (fileType === 'image') {
+                        previewElement.setAttribute('src', e.target.result);
+                    } else if (fileType === 'video') {
+                        previewElement.setAttribute('src', e.target.result);
+                        previewElement.load();
+                    }
+
+                    previewElement.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function togglePriceField(isFree) {
+
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const isFreeSwitch = document.getElementById('isFreeSwitch');
+            if (isFreeSwitch) {
+                togglePriceField(isFreeSwitch.checked);
+            }
+        });
+    </script>
+}

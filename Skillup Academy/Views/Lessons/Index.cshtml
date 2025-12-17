@@ -1,0 +1,383 @@
+﻿@model object
+
+@{
+    ViewData["Title"] = "Lessons Management";
+
+    bool isAdminOrInstructor = User.IsInRole("Admin") || User.IsInRole("Instructor");
+
+    Course courseModel = Model as Course;
+
+    IEnumerable<Lesson> lessonsModel = (Model is IEnumerable<Lesson>) ? (IEnumerable<Lesson>)Model : courseModel?.Lessons?.OrderBy(l => l.OrderInCourse) ?? Enumerable.Empty<Lesson>();
+
+    var baseMediaPath = Url.Content("~/img/");
+    var firstLesson = lessonsModel.FirstOrDefault();
+    string playerVideoUrl = (firstLesson != null && !string.IsNullOrEmpty(firstLesson.VideoUrl)) ? baseMediaPath + firstLesson.VideoUrl : "";
+    // Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+@if (isAdminOrInstructor)
+{
+    <h1>Lessons Catalog</h1>
+    <hr />
+    @if (User.IsInRole("Instructor"))
+    {
+        <p>
+            <a asp-action="Create" asp-route-coursId="@lessonsModel.FirstOrDefault()?.CourseId" class="btn btn-primary btn-lg mb-4 shadow-sm">Create New Lesson</a>
+        </p>
+    }
+    <div class="row">
+        @if (lessonsModel.Any())
+        {
+            @foreach (var item in lessonsModel)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    @* <div class="card h-100 shadow-sm border-0">
+
+                        @if (!string.IsNullOrEmpty(item.VideoUrl))
+                        {
+                            <div class="card-img-top bg-dark text-center py-5 text-white">
+                                <i class="fas fa-play-circle fs-1"></i>
+                                <div class="small mt-2">Video Lesson</div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-secondary text-center py-5 text-white">
+                                <i class="fas fa-file-alt fs-1"></i>
+                                <div class="small mt-2">Text Lesson</div>
+                            </div>
+                        } *@
+                    <div class="card h-100 shadow-sm border-0">
+
+                        @if (!string.IsNullOrEmpty(item.VideoUrl))
+                        {
+                            // **الكود الجديد لعرض الفيديو**
+                            var videoFullPath = baseMediaPath + item.VideoUrl;
+                            <div class="card-img-top p-0 bg-dark" style="height:200px; overflow:hidden;">
+                                <video controls style="width:100%; height:100%; object-fit:cover;" preload="metadata">
+                                    <source src="@videoFullPath" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-secondary text-center py-5 text-white">
+                                <i class="fas fa-file-alt fs-1"></i>
+                                <div class="small mt-2">Text Lesson</div>
+                            </div>
+                        }
+
+                        <div class="card-body d-flex flex-column">
+
+                            <h5 class="card-title text-primary">@item.Title</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@item.Course?.Title</h6>
+
+                            <div class="mb-3">
+                                <span class="badge bg-primary me-2">@item.Type</span>
+                                <span class="badge @(item.IsFree ? "bg-success" : "bg-dark")">
+                                    @(item.IsFree ? "Free" : "Paid")
+                                </span>
+                            </div>
+
+                            <p class="card-text small text-muted mb-3">
+                                @if (!string.IsNullOrEmpty(item.Description) && item.Description.Length > 100)
+                                {
+                                    @item.Description.Substring(0, 100)
+                                    <text>...</text>
+                                }
+                                else
+                                {
+                                    @item.Description
+                                }
+                            </p>
+
+                            <div class="row row-cols-2 g-2 mb-3 small text-muted">
+                                <div class="col">
+                                    <i class="fas fa-clock me-1"></i> @item.Duration min
+                                </div>
+                                <div class="col">
+                                    <i class="fas fa-sort-numeric-up me-1"></i> Order: @item.Order
+                                </div>
+                                <div class="col">
+                                    @if (!string.IsNullOrEmpty(item.VideoUrl))
+                                    {
+                                        <i class="fas fa-video text-success me-1"></i>
+                                        <span class="text-success">Has Video</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-journal-text text-secondary me-1"></i>
+                                        <span class="text-secondary">Text Only</span>
+                                    }
+                                </div>
+                                <div class="col">
+                                    @if (!string.IsNullOrEmpty(item.AttachmentUrl))
+                                    {
+                                        <i class="fas fa-paperclip text-info me-1"></i>
+                                        <span class="text-info">Has Attachment</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-file text-secondary me-1"></i>
+                                        <span class="text-secondary">No Files</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="mt-auto pt-3 border-top">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm me-1">Details</a>
+                                @if (User.IsInRole("Instructor"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" style="color:black" class="btn btn-secondary btn-sm me-1">Edit</a>
+                                }
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-muted small">
+                            Lesson #@item.Order in @item.Course?.Title
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    No lessons found. Start by creating a new one!
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    @* STUDENT VIEW (Sidebar on RIGHT – No API) *@
+
+    <style>
+        .lesson-sidebar {
+            max-height: 85vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+            padding: 10px;
+            border-left: 1px solid #ddd;
+        }
+
+        .completed-lesson {
+            border-left: 6px solid #28a745 !important;
+            background: #eaf9ea !important;
+            transition: 0.3s;
+        }
+
+        .lesson-item {
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+            .lesson-item:hover {
+                background: #f3f4f6;
+            }
+
+            .lesson-item.active {
+                background: #4e73df;
+                color: #fff !important;
+            }
+
+        /* ✅ Animation للأيقونة */
+        .completed-lesson .complete-icon {
+            animation: checkPop 0.4s ease;
+        }
+
+        @@keyframes checkPop {
+            0%
+
+        {
+            transform: scale(0);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+        }
+    </style>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+
+            <!-- MAIN CONTENT (LEFT SIDE) -->
+            <div class="col-lg-9">
+
+                <h2 class="fw-bold text-dark">@courseModel?.Title</h2>
+                <p class="text-muted">@courseModel?.ShortDescription</p>
+
+                <!-- VIDEO PLAYER -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-0">
+
+                        <video id="course-video-player" controls
+                               style="width:100%;height:450px;background:#000;">
+                            @if (firstLesson?.VideoUrl != null)
+                            {
+                                <source src="@(baseMediaPath + firstLesson.VideoUrl)" type="video/mp4" />
+                            }
+                        </video>
+
+                    </div>
+                </div>
+
+                <!-- LESSON DETAILS -->
+                <div class="card shadow-sm" id="lesson-details-content">
+                    <div class="card-body">
+
+                        <h4 id="lesson-title" class="fw-bold text-primary mb-3">
+                            @firstLesson?.Title
+                        </h4>
+
+                        <h6 class="text-secondary">Description</h6>
+                        <p id="lesson-description">
+                            @Html.Raw(firstLesson?.Description?.Replace("\n", "<br/>"))
+                        </p>
+
+                        <hr />
+
+                        <h6 class="text-secondary">Text Content</h6>
+                        <div id="lesson-content" class="p-3 bg-light rounded">
+                            @Html.Raw(firstLesson?.Content?.Replace("\n", "<br/>"))
+                        </div>
+
+                        <div id="lesson-attachment" class="mt-4">
+                            @if (!string.IsNullOrEmpty(firstLesson?.AttachmentUrl))
+                            {
+                                <a href="@(baseMediaPath + firstLesson.AttachmentUrl)"
+                                   download class="btn btn-info">
+                                    <i class="fas fa-download me-2"></i> Download Attachment
+                                </a>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- BACK TO COURSES BUTTON -->
+                <div class="mt-4 text-start">
+                    <a asp-action="Details"
+                       asp-controller="Course"
+                       asp-route-id="@ViewBag.courseId"
+                       class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Courses
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- SIDEBAR RIGHT -->
+            <div class="col-lg-3">
+                <div class="lesson-sidebar shadow-sm bg-white rounded">
+
+                    <h5 class="fw-bold text-primary mb-3">
+                        <i class="fas fa-list me-2"></i> Lessons (@lessonsModel.Count())
+                    </h5>
+
+                    <ul class="list-group border-0">
+                        @foreach (var lesson in lessonsModel)
+                        {
+                            <li class="lesson-item @(lesson.Id == firstLesson?.Id ? "active" : "")"
+                                data-id="@lesson.Id"
+                                data-video="@(string.IsNullOrEmpty(lesson.VideoUrl) ? "" : baseMediaPath + lesson.VideoUrl)"
+                                data-title="@lesson.Title"
+                                data-description="@lesson.Description?.Replace("\n", "<br/>")"
+                                data-content="@lesson.Content?.Replace("\n", "<br/>")"
+                                data-attachment="@(string.IsNullOrEmpty(lesson.AttachmentUrl) ? "" : baseMediaPath + lesson.AttachmentUrl)">
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">@lesson.Order. @lesson.Title</div>
+                                        <div class="small @(lesson.Id == firstLesson?.Id ? "text-light" : "text-muted")">
+                                            <i class="far fa-clock me-1"></i> @lesson.Duration min
+                                        </div>
+                                    </div>
+
+                                    <!-- ✅ أيقونة Complete (مخفية بشكل افتراضي) -->
+                                    <i class="fas fa-check-circle text-success complete-icon" style="display:none; font-size:1.5rem;"></i>
+                                </div>
+
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+
+            document.querySelectorAll(".lesson-item").forEach(item => {
+
+                item.addEventListener("click", function () {
+
+                    // Remove active highlight
+                    document.querySelectorAll(".lesson-item")
+                        .forEach(li => li.classList.remove("active"));
+
+                    this.classList.add("active");
+
+                    // Read lesson data
+                    let video = this.dataset.video;
+                    let title = this.dataset.title;
+                    let desc = this.dataset.description;
+                    let content = this.dataset.content;
+                    let attachment = this.dataset.attachment;
+
+                    // Update video
+                    const player = document.getElementById("course-video-player");
+                    player.src = video;
+                    player.load();
+                    player.play();
+
+                    // Update lesson text
+                    document.getElementById("lesson-title").innerHTML = title;
+                    document.getElementById("lesson-description").innerHTML = desc;
+                    document.getElementById("lesson-content").innerHTML = content;
+
+                    // Update attachment
+                    const attDiv = document.getElementById("lesson-attachment");
+                    if (attachment) {
+                        attDiv.innerHTML =
+                            `<a href="${attachment}" download class="btn btn-info">
+                                <i class="fas fa-download me-2"></i> Download Attachment
+                            </a>`;
+                    } else {
+                        attDiv.innerHTML = "";
+                    }
+
+                    // ✅ NEW: Mark lesson as completed when video ends
+                    player.onended = () => {
+                        // إضافة الـ class للتنسيق
+                        this.classList.add("completed-lesson");
+
+                        // ✅ إظهار أيقونة Complete
+                        const icon = this.querySelector(".complete-icon");
+                        if (icon) {
+                            icon.style.display = "block";
+                        }
+                    };
+                });
+            });
+
+        </script>
+    }
+
+}

@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Dashboard - Skillup Academy</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="~/css/StyleHomePage.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #0d6efd;
+            --light-bg: #f8f9fa;
+            --text-dark: #212529;
+            --border-radius: 15px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        /* ===== Sidebar ثابت + شكل محسّن ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            z-index: 1000;
+            padding-bottom: 30px;
+            font-size: 1.05rem; /* تكبير الخط */
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 0.85rem 1rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.35rem;
+            transition: var(--transition);
+            font-size: 1.05rem;
+        }
+
+            .nav-link i {
+                font-size: 1.2rem; /* تكبير الأيقونات */
+                margin-right: 10px;
+            }
+
+            .nav-link:hover,
+            .nav-link.active {
+                background-color: rgba(255, 255, 255, 0.25);
+                color: #fff;
+                font-weight: 600;
+            }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 10px;
+        }
+
+        /* نقل Settings + Logout لتحت */
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* ========= Main Content ========= */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        /* ---------- Responsive ---------- */
+        @@media (max-width: 767.98px) {
+            .sidebar
+
+        {
+            transform: translateX(-100%);
+            transition: transform .3s ease;
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+        .main-content {
+            margin-left: 0 !important;
+        }
+
+        }
+    </style>
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="position-sticky d-flex flex-column h-100">
+
+                    <!-- Header -->
+                    <div class="sidebar-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Teacher Dashboard</h5>
+                        <button class="btn btn-dark d-md-none" id="closeSidebar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Navigation -->
+                    <ul class="nav flex-column mt-3">
+
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/Teacher/Dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Teacher/MyCourses">
+                                <i class="fas fa-book"></i>
+                                My Courses
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Teacher/Students">
+                                <i class="fas fa-users"></i>
+                                Students
+                            </a>
+                        </li>
+
+                    </ul>
+
+                    <!-- Bottom Items -->
+                    <div class="sidebar-bottom mt-auto">
+
+                        <ul class="nav flex-column">
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Teacher/Setting">
+                                    <i class="fas fa-cog"></i>
+                                    Settings
+                                </a>
+                            </li>
+
+                            <li class="nav-item mt-3">
+                                <a class="nav-link text-warning" href="/Account/Logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Logout
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col main-content">
+                <button class="btn btn-primary d-md-none mb-3" id="openSidebar">
+                    <i class="fas fa-bars"></i> Menu
+                </button>
+
+                <main>
+                    @RenderBody()
+                </main>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const sidebar = document.querySelector('.sidebar');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+
+        if (openBtn) openBtn.onclick = () => sidebar.classList.add("show");
+        if (closeBtn) closeBtn.onclick = () => sidebar.classList.remove("show");
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

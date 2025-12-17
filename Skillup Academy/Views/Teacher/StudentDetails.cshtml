@@ -1,0 +1,937 @@
+﻿
+@using Core.Enums
+@using Skillup_Academy.ViewModels.TeacherDashboard
+@model StudentDetailsVM
+
+@{
+    ViewData["Title"] = "Student Details";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<!-- Teacher Top Bar -->
+<div class="teacher-top-bar">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="teacher-profile-info">
+                    <div class="teacher-avatar-container">
+                        @if (!string.IsNullOrEmpty(ViewBag.ProfilePictureUrl))
+                        {
+                            <img src="@ViewBag.ProfilePictureUrl" class="teacher-avatar" alt="@ViewBag.TeacherName">
+                        }
+                        else
+                        {
+                            <div class="teacher-avatar placeholder-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        }
+                        <div class="online-indicator"></div>
+                    </div>
+                    <div class="teacher-details">
+                        <h4 class="teacher-name mb-1">Student Details</h4>
+                        <p class="teacher-expertise mb-0">
+                            <i class="fas fa-user-graduate me-1"></i>
+                            View and manage student information
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex align-items-center justify-content-end gap-3">
+                    <a href="@Url.Action("Students", "Teacher")" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Students
+                    </a>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-envelope me-2"></i>Send Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <!-- Student Profile Header -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="student-profile-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <div class="student-avatar-large">
+                                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                                {
+                                    <img src="/img/@Model.ProfilePicture" alt="@Model.FullName">
+                                }
+                                else
+                                {
+                                    <div class="avatar-placeholder">
+                                        @GetInitials(Model.FullName)
+                                    </div>
+                                }
+                                <div class="status-indicator @(Model.Status == StudentStatus.Active ? "online" : "offline")"></div>
+                            </div>
+                            <div class="student-info-main ms-4">
+                                <h1 class="student-name">@Model.FullName</h1>
+                                <div class="student-meta">
+                                    <span class="meta-item">
+                                        <i class="fas fa-envelope me-1"></i>@Model.Email
+                                    </span>
+                                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                                    {
+                                        <span class="meta-item">
+                                            <i class="fas fa-phone me-1"></i>@Model.PhoneNumber
+                                        </span>
+                                    }
+                                    <span class="meta-item status-badge @Model.Status.ToString().ToLower()">
+                                        <i class="fas fa-circle me-1"></i>@Model.Status
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="student-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">@Model.CoursesCount</div>
+                                <div class="stat-label">Courses</div>
+                            </div>
+                            @* <div class="stat-item">
+                                <div class="stat-number">@(Model.Courses?.Sum(c => c.) ?? 0)%</div>
+                                <div class="stat-label">Avg Progress</div>
+                            </div> *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-1">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-number">@Model.CoursesCount</h3>
+                        <p class="stat-label">Enrolled Courses</p>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-trending-up me-1"></i>
+                    <small>Total courses enrolled</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-2">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                   @*  <div class="stat-info">
+                        <h3 class="stat-number">@(Model.Courses?.Count(c => c.CompletionPercentage >= 100) ?? 0)</h3>
+                        <p class="stat-label">Completed Courses</p>
+                    </div> *@
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-graduation-cap me-1"></i>
+                    <small>Fully completed</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-3">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                   @*  <div class="stat-info">
+                        <h3 class="stat-number">@(Model.Courses?.Count(c => c.CompletionPercentage > 0 && c.CompletionPercentage < 100) ?? 0)</h3>
+                        <p class="stat-label">In Progress</p>
+                    </div> *@
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-spinner me-1"></i>
+                    <small>Currently learning</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card gradient-4">
+                <div class="stat-content">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    @* <div class="stat-info">
+                        <h3 class="stat-number">@(Model.Courses?.Average(c => c.CompletionPercentage)?.ToString("0") ?? "0")%</h3>
+                        <p class="stat-label">Average Progress</p>
+                    </div> *@
+                </div>
+                <div class="stat-footer">
+                    <i class="fas fa-percentage me-1"></i>
+                    <small>Overall progress</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Student Courses -->
+        <div class="col-lg-8">
+            <div class="student-courses-card">
+                <div class="card-header-custom">
+                    <h4 class="section-title mb-0">
+                        <i class="fas fa-book me-2"></i>Enrolled Courses
+                    </h4>
+                    <span class="badge bg-primary">@Model.CoursesCount Courses</span>
+                </div>
+                <div class="card-body-custom">
+                    @if (Model.Courses != null && Model.Courses.Any())
+                    {
+                        <div class="courses-list">
+                            @foreach (var course in Model.Courses)
+                            {
+                                <div class="course-progress-item">
+                                    <div class="course-info">
+                                        <div class="course-header">
+                                            <h5 class="course-title">@course.CourseTitle</h5>
+                                            @* <span class="progress-percentage">@course.CompletionPercentage%</span> *@
+                                        </div>
+                                        <p class="course-description">@course.CourseDescription</p>
+                                        <div class="progress-container">
+                                            <div class="progress-bar">
+                                                @* <div class="progress-fill" style="width: @course.CompletionPercentage%"></div> *@
+                                            </div>
+                                            <div class="progress-stats">
+                                                <span class="stat">
+                                                    <i class="fas fa-play-circle me-1"></i>
+                                                    @* @course.CompletedLessons/@course.TotalLessons lessons *@
+                                                </span>
+                                                <span class="stat">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                   @*  Last active: @course.LastAccessDate.ToString("MMM dd, yyyy") *@
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="course-actions">
+                                        <button class="btn-action btn-view" data-course-id="@course.CourseId" title="View Course">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-action btn-progress" data-course-id="@course.CourseId" title="View Progress">
+                                            <i class="fas fa-chart-line"></i>
+                                        </button>
+                                        <button class="btn-action btn-message" data-course-id="@course.CourseId" title="Send Message">
+                                            <i class="fas fa-envelope"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h5>No Courses Enrolled</h5>
+                            <p class="text-muted">This student hasn't enrolled in any of your courses yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Information Sidebar -->
+        <div class="col-lg-4">
+            <div class="student-info-sidebar">
+                <!-- Personal Information -->
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <h5 class="section-title mb-0">
+                            <i class="fas fa-user me-2"></i>Personal Information
+                        </h5>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="info-item">
+                            <label>Full Name</label>
+                            <p>@Model.FullName</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Email Address</label>
+                            <p>@Model.Email</p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                        {
+                            <div class="info-item">
+                                <label>Phone Number</label>
+                                <p>@Model.PhoneNumber</p>
+                            </div>
+                        }
+                        <div class="info-item">
+                            <label>Status</label>
+                            <div class="status-badge @Model.Status.ToString().ToLower()">
+                                <i class="fas fa-circle me-1"></i>@Model.Status
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <h5 class="section-title mb-0">
+                            <i class="fas fa-bolt me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="action-buttons-vertical">
+                            <button class="btn-action-full btn-message">
+                                <i class="fas fa-envelope me-2"></i>Send Message
+                            </button>
+                            <button class="btn-action-full btn-progress">
+                                <i class="fas fa-chart-bar me-2"></i>View Full Progress
+                            </button>
+                            <button class="btn-action-full btn-certificate">
+                                <i class="fas fa-award me-2"></i>Generate Certificate
+                            </button>
+                            <button class="btn-action-full btn-notes">
+                                <i class="fas fa-sticky-note me-2"></i>Add Notes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <h5 class="section-title mb-0">
+                            <i class="fas fa-history me-2"></i>Recent Activity
+                        </h5>
+                    </div>
+                    @* <div class="card-body-custom">
+                        <div class="activity-list">
+                            @if (Model.Courses != null && Model.Courses.Any())
+                            {
+                                var recentCourses = Model.Courses.OrderByDescending(c => c.LastAccessDate).Take(3);
+                                foreach (var course in recentCourses)
+                                {
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-play-circle"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">Accessed <strong>@course.CourseTitle</strong></p>
+                                            <small class="activity-time">@course.LastAccessDate.ToString("MMM dd, yyyy HH:mm")</small>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-muted text-center">No recent activity</p>
+                            }
+                        </div>
+                    </div> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Reuse your existing styles */
+        .teacher-top-bar {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .teacher-profile-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .teacher-avatar-container {
+            position: relative;
+        }
+
+        .teacher-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+        }
+
+        .placeholder-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            border: 3px solid #667eea;
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            background: #28a745;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        /* Student Profile Header */
+        .student-profile-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .student-avatar-large {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+            .student-avatar-large img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid #667eea;
+            }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            border: 4px solid #667eea;
+        }
+
+        .status-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            border-radius: 50%;
+        }
+
+            .status-indicator.online {
+                background: #28a745;
+            }
+
+            .status-indicator.offline {
+                background: #6c757d;
+            }
+
+        .student-info-main .student-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+            .status-badge.active {
+                background: #28a745;
+            }
+
+            .status-badge.inactive {
+                background: #6c757d;
+            }
+
+        .student-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: flex-end;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Enhanced Stat Cards */
+        .stat-card {
+            border: none;
+            border-radius: 20px;
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            min-height: 140px;
+        }
+
+        .gradient-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .gradient-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .gradient-4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            margin-right: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+            color: white;
+        }
+
+        .stat-label {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .stat-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+            font-size: 0.8rem;
+            opacity: 0.9;
+            color: white;
+        }
+
+        /* Cards Styling */
+        .student-courses-card,
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header-custom {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        .card-body-custom {
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0;
+        }
+
+        /* Course Progress Items */
+        .course-progress-item {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .course-progress-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+
+        .course-info {
+            flex: 1;
+            margin-right: 1.5rem;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .progress-percentage {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .course-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .progress-container {
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .course-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+            .btn-action:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+
+            .btn-action.btn-view:hover {
+                color: #17a2b8;
+                border-color: #17a2b8;
+            }
+
+            .btn-action.btn-progress:hover {
+                color: #6f42c1;
+                border-color: #6f42c1;
+            }
+
+            .btn-action.btn-message:hover {
+                color: #007bff;
+                border-color: #007bff;
+            }
+
+        /* Student Information Sidebar */
+        .info-item {
+            margin-bottom: 1.5rem;
+        }
+
+            .info-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .info-item label {
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 0.25rem;
+                display: block;
+            }
+
+            .info-item p {
+                color: #6c757d;
+                margin: 0;
+            }
+
+        .action-buttons-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-action-full {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            background: white;
+            color: #2c3e50;
+            text-align: left;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+            .btn-action-full:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                border-color: #667eea;
+                color: #667eea;
+            }
+
+        /* Activity List */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+            .activity-item:hover {
+                background: #f8f9fa;
+            }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .activity-time {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .student-profile-header {
+                padding: 1.5rem;
+            }
+
+            .student-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .student-stats {
+                justify-content: flex-start;
+                margin-top: 1rem;
+            }
+
+            .course-progress-item {
+                flex-direction: column;
+            }
+
+            .course-actions {
+                flex-direction: row;
+                margin-top: 1rem;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Course action buttons
+            document.querySelectorAll('.btn-action').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const action = this.classList[1]; // btn-view, btn-progress, btn-message
+                    const courseId = this.dataset.courseId;
+
+                    switch (action) {
+                        case 'btn-view':
+                            window.location.href = `/Course/Details/${courseId}`;
+                            break;
+                        case 'btn-progress':
+                            alert(`View progress for course ${courseId}`);
+                            break;
+                        case 'btn-message':
+                            alert(`Send message about course ${courseId}`);
+                            break;
+                    }
+                });
+            });
+
+            // Quick action buttons
+            document.querySelectorAll('.btn-action-full').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const action = this.classList[1]; // btn-message, btn-progress, etc.
+
+                    switch (action) {
+                        case 'btn-message':
+                            alert('Send message to student');
+                            break;
+                        case 'btn-progress':
+                            alert('View full progress report');
+                            break;
+                        case 'btn-certificate':
+                            alert('Generate certificate');
+                            break;
+                        case 'btn-notes':
+                            alert('Add student notes');
+                            break;
+                    }
+                });
+            });
+
+            console.log('Student details page loaded successfully');
+        });
+    </script>
+}
+
+@functions {
+    public string GetInitials(string fullName)
+    {
+        if (string.IsNullOrEmpty(fullName))
+            return "??";
+
+        var names = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (names.Length >= 2)
+            return $"{names[0][0]}{names[1][0]}".ToUpper();
+        else if (names.Length == 1)
+            return names[0].Substring(0, Math.Min(2, names[0].Length)).ToUpper();
+        else
+            return "??";
+    }
+}

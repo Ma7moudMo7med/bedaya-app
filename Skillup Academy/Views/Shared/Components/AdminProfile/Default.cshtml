@@ -1,0 +1,19 @@
+﻿@*  dynamic model for anonymous object in view Component *@
+@model dynamic
+@{
+    var baseMediaPath = "/img/";
+    var currentProfilePath = string.IsNullOrEmpty(Model.ProfilePicture) ? "N/A" : Model.ProfilePicture;
+    if (currentProfilePath != "N/A" && !currentProfilePath.StartsWith(baseMediaPath))
+    {
+        currentProfilePath = baseMediaPath + currentProfilePath.Replace("~", "");
+    }
+}
+<a class="nav-link" asp-controller="Admin" asp-action="Settings">
+    <span class="mr-2 d-none d-lg-inline text-white small">
+        @Model.FullName
+    </span>
+    <img class="img-profile rounded-circle"
+         src="@currentProfilePath"
+         alt="@Model.FullName"
+         style="width: 3.2rem; height: 3.2rem; object-fit: cover;">
+</a>
