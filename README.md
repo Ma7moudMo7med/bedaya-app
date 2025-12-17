@@ -23,20 +23,40 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
 
 ## 🏗️ Architecture (N‑Tier) — Overview
 
- **Presentation (ASP.NET MVC)** &nbsp;&nbsp;&nbsp;&nbsp;
-     **⇅**  &nbsp;&nbsp;&nbsp;&nbsp;
-**Business Logic Layer (Services, Validation, DTOs)** &nbsp;&nbsp;&nbsp;&nbsp;
-* **⇅**  
-* **Data Access Layer (Repositories, EF Core DbContext)** &nbsp;&nbsp;&nbsp;&nbsp;
-* **⇅**  
-* **Database (SQL Server)**
+## 🏗️ Architecture (N‑Tier) — Overview
+
+```
+Presentation (ASP.NET MVC)
+    ⇅
+Business Logic Layer (Services, Validation, DTOs)
+    ⇅
+Data Access Layer (Repositories, EF Core DbContext)
+    ⇅
+Database (SQL Server)
+```
 
 ### Layers — Responsibilities
 
-* **Presentation Layer**: MVC Controllers, Views, ViewModels. Thin controllers — delegate logic to BLL.
-* **Business Logic Layer (BLL)**: Core application rules, business validation, interfaces for payment/storage, and DTOs mapping (AutoMapper).
-* **Data Access Layer (DAL)**: EF Core repositories, unit-of-work, migrations, and query optimizations.
-* **Database**: SQL Server with migrations & seed data.
+---
+* **Presentation Layer**
+
+  * MVC Controllers, Views, ViewModels
+  * Thin controllers — delegate logic to BLL
+
+* **Business Logic Layer (BLL)**
+
+  * Core application rules, services, business validation
+  * Interfaces for payment, storage, and search
+  * DTOs and mapping (AutoMapper)
+
+* **Data Access Layer (DAL)**
+
+  * EF Core repositories, unit-of-work, migrations
+  * Implementation of storage, seeding, and query optimizations
+
+* **Database**
+
+  * SQL Server with migrations & seed data
 
 ---
 
@@ -56,19 +76,28 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
 * Visual Studio 2022+ or VS Code
 
 ### Quick Setup
-1. **Clone repo:**
-   ```bash
-   git clone [https://github.com/Ma7moudMo7med/bedaya-app.git](https://github.com/Ma7moudMo7med/bedaya-app.git)
-   cd bedaya-app
-2. **Configure connection string & keys in appsettings.Development.json or user secrets
-3. Apply EF migrations & seed data:
-   ```bash
-   dotnet ef database update --project src/Your.DAL --startup-project src/Your.Presentation
+
+1. Clone repo
+
+```bash
+git clone https://github.com/Ma7moudMo7med/bedaya-app.git
+cd bedaya-app
+```
+
+2. Configure connection string & keys in `appsettings.Development.json` or user secrets
+3. Apply EF migrations & seed data
+
+```bash
+dotnet ef database update --project src/Your.DAL/Your.DAL.csproj --startup-project src/Your.Presentation/Your.Presentation.csproj
+```
+
 4. Run the web project
-   ```bash
-   dotnet run --project src/Your.Presentation/Your.Presentation.csproj
-      
----
+
+```bash
+dotnet run --project src/Your.Presentation/Your.Presentation.csproj
+ 
+```
+
 ---
 
 ## 🔐 Configuration (Important)
@@ -105,9 +134,23 @@ Inside your **Presentation (MVC)** project root, create a file named `appsetting
   },
   "AllowedHosts": "*"
 }
+```
+🧾 Configuration Sections
+PaymobSettings
 
+Payment gateway configuration
 
+SMTP
+
+Used for email confirmation & notifications
+
+Gmail requires App Password
+
+ConnectionStrings
+
+SQL Server database connection
 ---
+
 ### 🧩 Roles & Permissions
 * Admin: Full CRUD on users, courses, categories, subscriptions, and payments.
 
@@ -127,29 +170,6 @@ Inside your **Presentation (MVC)** project root, create a file named `appsetting
 
 ---
 ### 📬 Contact / Author
-Author: Mahmoud Mohamed
-
-GitHub: Ma7moudMo7med
-
----
-
-🧩 Roles & Permissions
-Admin: Full CRUD on users, courses, categories, subscriptions, and payments.
-
-Instructor: Manage own courses, lessons, uploads, and view analytics.
-
-Student: Browse, enroll, and consume content according to subscription limits.
-
-🛠️ Development Tips
-✅ Keep controllers thin; place business rules in BLL.
-
-✅ Use DTOs and AutoMapper for mapping domain models.
-
-✅ Store credentials securely (User Secrets / Key Vault) for production.
-
-✅ Seed admin and sample data only in development environments.
-
-📬 Contact / Author
 Author: Mahmoud Mohamed
 
 GitHub: Ma7moudMo7med
