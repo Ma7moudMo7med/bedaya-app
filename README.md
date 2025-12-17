@@ -24,11 +24,11 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
 ## 🏗️ Architecture (N‑Tier) — Overview
 
 **Presentation (ASP.NET MVC)** &nbsp;&nbsp;&nbsp;&nbsp;
-**⇅  
+**⇅**  
 **Business Logic Layer (Services, Validation, DTOs)** &nbsp;&nbsp;&nbsp;&nbsp;
-**⇅  
+**⇅**  
 **Data Access Layer (Repositories, EF Core DbContext)** &nbsp;&nbsp;&nbsp;&nbsp;
-**⇅  
+**⇅**  
 **Database (SQL Server)**
 
 ### Layers — Responsibilities
