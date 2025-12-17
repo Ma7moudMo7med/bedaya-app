@@ -23,17 +23,20 @@ A clean, well-structured learning platform built with **ASP.NET MVC (.NET 8)** u
 
 ## 🏗️ Architecture (N‑Tier) — Overview
 
-**Presentation (ASP.NET MVC)** &nbsp;&nbsp;&nbsp;&nbsp;⇅  
-**Business Logic Layer (Services, Validation, DTOs)** &nbsp;&nbsp;&nbsp;&nbsp;⇅  
-**Data Access Layer (Repositories, EF Core DbContext)** &nbsp;&nbsp;&nbsp;&nbsp;⇅  
+**Presentation (ASP.NET MVC)** &nbsp;&nbsp;&nbsp;&nbsp;
+⇅  
+**Business Logic Layer (Services, Validation, DTOs)** &nbsp;&nbsp;&nbsp;&nbsp;
+⇅  
+**Data Access Layer (Repositories, EF Core DbContext)** &nbsp;&nbsp;&nbsp;&nbsp;
+⇅  
 **Database (SQL Server)**
 
 ### Layers — Responsibilities
 
-* **Presentation Layer:** MVC Controllers, Views, ViewModels. Thin controllers — delegate logic to BLL.
-* **Business Logic Layer (BLL):** Core application rules, business validation, interfaces for payment/storage, and DTOs mapping (AutoMapper).
-* **Data Access Layer (DAL):** EF Core repositories, unit-of-work, migrations, and query optimizations.
-* **Database:** SQL Server with migrations & seed data.
+* **Presentation Layer**: MVC Controllers, Views, ViewModels. Thin controllers — delegate logic to BLL.
+* **Business Logic Layer (BLL)**: Core application rules, business validation, interfaces for payment/storage, and DTOs mapping (AutoMapper).
+* **Data Access Layer (DAL)**: EF Core repositories, unit-of-work, migrations, and query optimizations.
+* **Database**: SQL Server with migrations & seed data.
 
 ---
 
